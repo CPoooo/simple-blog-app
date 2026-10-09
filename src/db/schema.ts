@@ -34,16 +34,22 @@ export const posts = pgTable(
     authorId: integer("author_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    // Stable public URL (/p/[slug]); set once at creation, never changes on rename.
+    slug: text("slug").notNull(),
     title: text("title").notNull(),
     // Tiptap JSON document; rendered server-side, never injected as raw HTML.
     content: jsonb("content").notNull(),
     excerpt: text("excerpt").notNull().default(""),
+    readingMinutes: integer("reading_minutes").notNull().default(1),
+    // null = draft (author-only); set = published.
+    publishedAt: timestamp("published_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
+    uniqueIndex("posts_slug_idx").on(t.slug),
     index("posts_author_idx").on(t.authorId),
-    index("posts_created_idx").on(t.createdAt),
+    index("posts_published_idx").on(t.publishedAt),
   ],
 );
 

@@ -42,7 +42,12 @@ async function AccountNav() {
 
   return (
     <>
-      <span className="hidden text-sm text-muted-foreground sm:inline">@{user.username}</span>
+      <Link href="/write" className={buttonVariants({ variant: "ghost" })}>
+        Write
+      </Link>
+      <Link href="/me/posts" className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline">
+        @{user.username}
+      </Link>
       <form action={logout}>
         <Button type="submit" variant="outline">
           Sign out
