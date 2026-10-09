@@ -70,7 +70,7 @@ export function ProfileForm({ initial }: { initial: { username: string; bio: str
         )}
       </div>
 
-      <div>
+      <div className="flex justify-center sm:justify-start">
         <Button type="submit" disabled={pending}>
           {pending ? "Saving…" : "Save profile"}
         </Button>

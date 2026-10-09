@@ -30,7 +30,7 @@ async function EditPost({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
         <h1 className="text-3xl font-semibold">{post.publishedAt ? "Edit post" : "Edit draft"}</h1>
         <DeletePostButton id={post.id} />
       </div>

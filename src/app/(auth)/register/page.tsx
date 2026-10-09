@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Create account" };
 export default function RegisterPage() {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="text-center sm:text-left">
         <CardTitle className="text-xl">Create your account</CardTitle>
         <CardDescription>Start writing and following the people you like to read.</CardDescription>
       </CardHeader>

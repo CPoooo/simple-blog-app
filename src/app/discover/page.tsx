@@ -15,8 +15,8 @@ type SearchParams = Promise<{ tag?: string | string[] }>;
 export default function DiscoverPage({ searchParams }: { searchParams: SearchParams }) {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-12">
-      <h1 className="text-4xl font-semibold">Discover</h1>
-      <p className="mt-2 text-muted-foreground">The best of the blog right now. Likes count most, but fresh posts get a head start.</p>
+      <h1 className="text-center sm:text-left text-4xl font-semibold">Discover</h1>
+      <p className="mt-2 text-center sm:text-left text-muted-foreground">The best of the blog right now. Likes count most, but fresh posts get a head start.</p>
       <Suspense fallback={<FeedSkeleton />}>
         <Discover searchParams={searchParams} />
       </Suspense>
@@ -37,7 +37,7 @@ async function Discover({ searchParams }: { searchParams: SearchParams }) {
   return (
     <>
       <nav aria-label="Filter by tag" className="mt-8 -mx-4 overflow-x-auto px-4 pb-2">
-        <ul className="flex w-max gap-2">
+        <ul className="mx-auto flex w-max gap-2 sm:mx-0">
           <li>
             <Link href="/discover" aria-current={tag ? undefined : "page"} className={badgeVariants({ variant: tag ? "outline" : "default" })}>
               All

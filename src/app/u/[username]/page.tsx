@@ -42,9 +42,9 @@ async function Profile({ params }: { params: Params }) {
 
   return (
     <>
-      <header className="grid gap-5 border-b pb-8">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
+      <header className="grid gap-5 border-b pb-8 text-center sm:text-left">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
             <UserAvatar username={profile.username} className="size-16 text-3xl" />
             <div>
               <h1 className="text-3xl font-semibold">@{profile.username}</h1>
@@ -55,8 +55,8 @@ async function Profile({ params }: { params: Params }) {
             <ProfileAction userId={profile.id} username={profile.username} followers={profile.followers} />
           </Suspense>
         </div>
-        {profile.bio && <p className="max-w-prose leading-7">{profile.bio}</p>}
-        <dl className="flex gap-6 text-sm">
+        {profile.bio && <p className="mx-auto max-w-prose leading-7 sm:mx-0">{profile.bio}</p>}
+        <dl className="flex justify-center gap-6 text-sm sm:justify-start">
           {[
             ["posts", profile.posts],
             ["followers", profile.followers],

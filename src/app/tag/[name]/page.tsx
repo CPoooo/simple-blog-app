@@ -25,8 +25,8 @@ async function TagPosts({ params }: { params: Promise<{ name: string }> }) {
 
   return (
     <>
-      <h1 className="text-4xl font-semibold">#{name}</h1>
-      <p className="mt-2 text-muted-foreground">
+      <h1 className="text-center sm:text-left text-4xl font-semibold">#{name}</h1>
+      <p className="mt-2 text-center sm:text-left text-muted-foreground">
         {posts.length === 0 ? "No published posts with this tag yet." : `${posts.length} ${posts.length === 1 ? "post" : "posts"}`}
       </p>
       <div className="mt-6 divide-y border-t">

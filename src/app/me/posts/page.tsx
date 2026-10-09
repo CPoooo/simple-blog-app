@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "My posts" };
 export default function MyPostsPage() {
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
-      <div className="mb-8 flex items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
         <h1 className="text-3xl font-semibold">My posts</h1>
         <Link href="/write" className={buttonVariants()}>
           New post
@@ -41,9 +41,9 @@ async function PostList() {
   return (
     <ul className="divide-y rounded-lg border">
       {mine.map((post) => (
-        <li key={post.id} className="flex items-start justify-between gap-4 p-4">
+        <li key={post.id} className="flex flex-col items-center gap-3 p-4 text-center sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:text-left">
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
               <Link
                 href={post.publishedAt ? `/p/${post.slug}` : `/write/${post.id}`}
                 className="truncate font-medium hover:underline"

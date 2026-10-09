@@ -111,7 +111,7 @@ export function PostEditor({ post }: PostEditorProps) {
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
         <Button type="submit" name="intent" value="save" variant="outline" disabled={pending}>
           {post?.published ? "Save changes" : "Save draft"}
         </Button>

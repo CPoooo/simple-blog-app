@@ -11,8 +11,8 @@ export const metadata: Metadata = { title: "Profile settings" };
 export default function ProfileSettingsPage() {
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-10">
-      <h1 className="text-3xl font-semibold">Profile</h1>
-      <p className="mt-2 mb-8 text-muted-foreground">How you show up next to your posts and comments.</p>
+      <h1 className="text-center sm:text-left text-3xl font-semibold">Profile</h1>
+      <p className="mt-2 mb-8 text-center sm:text-left text-muted-foreground">How you show up next to your posts and comments.</p>
       <Suspense fallback={<Skeleton className="h-72 w-full" />}>
         <EditProfile />
       </Suspense>

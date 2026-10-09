@@ -20,13 +20,13 @@ export type PostCardData = {
 /** One post in a list (tag pages, discover). No server-only imports, so client lists can render it too. */
 export function PostCard({ post }: { post: PostCardData }) {
   return (
-    <article className="grid gap-2 py-6">
+    <article className="grid gap-2 py-6 text-center sm:text-left">
       <h2 className="text-2xl leading-snug font-semibold">
         <Link href={`/p/${post.slug}`} className="hover:underline">
           {post.title}
         </Link>
       </h2>
-      <p className="flex flex-wrap items-center gap-x-1 text-sm text-muted-foreground">
+      <p className="flex flex-wrap items-center justify-center gap-x-1 text-sm text-muted-foreground sm:justify-start">
         <Link href={`/u/${post.author.username}`} className="font-medium text-foreground/80 hover:text-foreground hover:underline">
           @{post.author.username}
         </Link>

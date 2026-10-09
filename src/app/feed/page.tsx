@@ -15,16 +15,16 @@ export default function FeedPage() {
   return (
     <main className="mx-auto grid w-full max-w-5xl flex-1 gap-12 px-4 py-12 lg:grid-cols-[minmax(0,1fr)_17rem]">
       <section aria-labelledby="feed-heading">
-        <h1 id="feed-heading" className="text-4xl font-semibold">
+        <h1 id="feed-heading" className="text-center sm:text-left text-4xl font-semibold">
           Your feed
         </h1>
-        <p className="mt-2 text-muted-foreground">New posts from the people you follow, newest first.</p>
+        <p className="mt-2 text-center sm:text-left text-muted-foreground">New posts from the people you follow, newest first.</p>
         <Suspense fallback={<FeedSkeleton />}>
           <Feed />
         </Suspense>
       </section>
       <aside aria-labelledby="suggest-heading" className="lg:pt-24">
-        <h2 id="suggest-heading" className="font-hand text-2xl text-primary">
+        <h2 id="suggest-heading" className="text-center sm:text-left font-hand text-2xl text-primary">
           worth following
         </h2>
         <Suspense fallback={<Skeleton className="mt-4 h-48 w-full" />}>

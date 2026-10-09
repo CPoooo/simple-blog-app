@@ -57,9 +57,9 @@ async function Post({ params }: { params: Params }) {
 
   return (
     <article>
-      <header className="mb-10">
+      <header className="mb-10 text-center sm:text-left">
         <h1 className="text-4xl leading-tight font-semibold sm:text-5xl">{post.title}</h1>
-        <div className="mt-6 flex items-center gap-3 text-sm">
+        <div className="mt-6 flex items-center justify-center gap-3 text-left text-sm sm:justify-start">
           <Link href={profile} tabIndex={-1} aria-hidden>
             <UserAvatar username={post.author.username} />
           </Link>
@@ -77,14 +77,14 @@ async function Post({ params }: { params: Params }) {
       </header>
       {/* HTML is generated from a schema-validated Tiptap document, never raw user HTML. */}
       <div className="prose-post" dangerouslySetInnerHTML={{ __html: renderPostHtml(post.content) }} />
-      <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t pt-6">
+      <footer className="mt-12 flex flex-col items-center gap-4 border-t pt-6 sm:flex-row sm:flex-wrap sm:justify-between">
         <TagList tags={post.tags} />
         {/* Session-dependent bits stream in on their own; the article never waits for them. */}
         <Suspense fallback={<Skeleton className="h-8 w-16" />}>
           <PostLikes postId={post.id} />
         </Suspense>
       </footer>
-      <aside aria-label="About the author" className="mt-10 flex items-start gap-4 rounded-xl bg-muted/50 p-5">
+      <aside aria-label="About the author" className="mt-10 flex flex-col items-center gap-4 rounded-xl bg-muted/50 p-5 text-center sm:flex-row sm:items-start sm:text-left">
         <UserAvatar username={post.author.username} className="size-12 text-xl" />
         <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">Written by</p>

@@ -18,7 +18,7 @@ const clean = (raw: string | string[] | undefined) => (typeof raw === "string" ?
 export default function SearchPage({ searchParams }: { searchParams: SearchParams }) {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-12">
-      <h1 className="text-4xl font-semibold">Search</h1>
+      <h1 className="text-center sm:text-left text-4xl font-semibold">Search</h1>
       <Suspense fallback={<Skeleton className="mt-8 h-10 w-full" />}>
         <SearchForm searchParams={searchParams} />
       </Suspense>

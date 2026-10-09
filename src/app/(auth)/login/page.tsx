@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Sign in" };
 export default function LoginPage() {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="text-center sm:text-left">
         <CardTitle className="text-xl">Welcome back</CardTitle>
         <CardDescription>Sign in to keep reading and writing.</CardDescription>
       </CardHeader>

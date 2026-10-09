@@ -21,14 +21,14 @@ export async function PostComments({ postId }: { postId: number }) {
 
   return (
     <section aria-labelledby="comments-heading" className="mt-12 border-t pt-8">
-      <h2 id="comments-heading" className="mb-6 text-2xl font-semibold">
+      <h2 id="comments-heading" className="mb-6 text-center sm:text-left text-2xl font-semibold">
         Comments {thread.length > 0 && <span className="text-muted-foreground">({thread.length})</span>}
       </h2>
 
       {user ? (
         <CommentForm postId={postId} />
       ) : (
-        <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+        <p className="rounded-lg border border-dashed p-4 text-center sm:text-left text-sm text-muted-foreground">
           <Link href="/login" className="font-medium text-foreground underline underline-offset-4">
             Sign in
           </Link>{" "}
@@ -37,12 +37,12 @@ export async function PostComments({ postId }: { postId: number }) {
       )}
 
       {thread.length === 0 ? (
-        <p className="mt-6 text-sm text-muted-foreground">No comments yet. Be the first.</p>
+        <p className="mt-6 text-center sm:text-left text-sm text-muted-foreground">No comments yet. Be the first.</p>
       ) : (
         <ol className="mt-8 grid gap-6">
           {thread.map((c) => (
-            <li key={c.id} className="grid gap-1">
-              <div className="flex items-center justify-between gap-2 text-sm">
+            <li key={c.id} className="grid gap-1 text-center sm:text-left">
+              <div className="flex flex-wrap items-center justify-center gap-2 text-sm sm:justify-between">
                 <span>
                   <Link href={`/u/${c.author.username}`} className="font-medium hover:underline">
                     @{c.author.username}
