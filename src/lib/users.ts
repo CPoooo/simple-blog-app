@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import { and, count, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, isNotNull, sql } from "drizzle-orm";
 import { follows, getDb, posts, users } from "@/db";
 
 const tagNames = { postTags: { with: { tag: { columns: { name: true } } } } } as const;
@@ -58,20 +58,6 @@ export async function isFollowing(followerId: number, followingId: number) {
     columns: { followerId: true },
   });
   return Boolean(row);
-}
-
-/** Newest posts from people you follow. Personal, so it's read fresh on each request. */
-export async function getFeed(userId: number, limit = 30) {
-  const db = getDb();
-  const followed = db.select({ id: follows.followingId }).from(follows).where(eq(follows.followerId, userId));
-  const rows = await db.query.posts.findMany({
-    where: and(isNotNull(posts.publishedAt), inArray(posts.authorId, followed)),
-    orderBy: desc(posts.publishedAt),
-    limit,
-    columns: cardColumns,
-    with: { author: { columns: { username: true } }, ...tagNames },
-  });
-  return rows.map(flattenTags);
 }
 
 /** People you don't follow yet, best writers first (published posts, then likes received). */
