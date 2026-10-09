@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { AccountMenu } from "@/components/account-menu";
 import { Wordmark } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/dal";
+import { unreadCount } from "@/lib/notifications";
 
 export function SiteHeader() {
   return (
@@ -50,10 +51,26 @@ async function AccountNav() {
     );
   }
 
+  const unread = await unreadCount(user.id);
   return (
     <>
       <Link href="/write" className={buttonVariants({ variant: "ghost" })}>
         Write
+      </Link>
+      <Link
+        href="/notifications"
+        className={buttonVariants({ variant: "ghost", size: "icon", className: "relative" })}
+        aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}
+      >
+        <Bell />
+        {unread > 0 && (
+          <span
+            aria-hidden
+            className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] leading-none font-semibold text-primary-foreground tabular-nums"
+          >
+            {unread > 9 ? "9+" : unread}
+          </span>
+        )}
       </Link>
       <AccountMenu username={user.username} avatarUrl={user.avatarUrl} />
     </>

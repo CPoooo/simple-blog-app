@@ -76,7 +76,7 @@ export async function register(_prev: AuthFormState, formData: FormData): Promis
   if (ipLimited(ip)) await recordAttempt(ipKey);
   // A cached "no such user" for /u/<username> must not outlive the account's creation.
   updateTag(`username:${username}`);
-  await createSession(created.id);
+  await createSession(created.id, 0); // new accounts start at token_version 0
   redirect("/feed");
 }
 
@@ -101,7 +101,7 @@ export async function login(_prev: AuthFormState, formData: FormData): Promise<A
 
   const user = await getDb().query.users.findFirst({
     where: eq(users.email, email),
-    columns: { id: true, passwordHash: true },
+    columns: { id: true, passwordHash: true, tokenVersion: true },
   });
 
   const valid = await bcrypt.compare(password, user?.passwordHash ?? (await getDummyHash()));
@@ -112,7 +112,7 @@ export async function login(_prev: AuthFormState, formData: FormData): Promise<A
   }
 
   await clearAttempts(emailKey);
-  await createSession(user.id);
+  await createSession(user.id, user.tokenVersion);
   redirect("/feed");
 }
 

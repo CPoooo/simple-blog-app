@@ -6,7 +6,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getDb, postTags, posts, tags } from "@/db";
 import { requireUser } from "@/lib/dal";
-import { docToText, makeExcerpt, makeSlug, parseDoc, readingMinutes } from "@/lib/post-content";
+import { isOwnPostImageUrl } from "@/lib/blob";
+import { docToText, imagesOf, makeExcerpt, makeSlug, parseDoc, readingMinutes } from "@/lib/post-content";
 import { parseTags } from "@/lib/tags";
 
 export type PostFormState =
@@ -78,6 +79,10 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
 
   const doc = parseDoc(content);
   if (!doc) return { errors: { content: ["Something is off with the post body. Try reloading the editor."] } };
+  // Images must be files this author uploaded here: no hotlinks, no tracking pixels.
+  if (!imagesOf(doc).every((img) => isOwnPostImageUrl(img.src, user.id) && img.alt.length <= 300)) {
+    return { errors: { content: ["Images have to be uploaded with the image button."] } };
+  }
 
   const text = docToText(doc);
   if (intent === "publish" && !text) return { errors: { content: ["Write something before publishing."] } };

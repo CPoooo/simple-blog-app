@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 // bcrypt silently ignores input past 72 bytes, so reject it rather than truncate.
-const password = z
+export const password = z
   .string({ error: "Password is required" })
   .min(8, "Password must be at least 8 characters")
   .refine((p) => new TextEncoder().encode(p).length <= 72, "Password is too long");
 
-const email = z
+export const email = z
   .string({ error: "Email is required" })
   .trim()
   .toLowerCase()

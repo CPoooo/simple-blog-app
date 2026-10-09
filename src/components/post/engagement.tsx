@@ -1,19 +1,29 @@
 import Link from "next/link";
 import { deleteComment } from "@/app/actions/engagement";
+import { BookmarkButton } from "@/components/post/bookmark-button";
 import { CommentForm } from "@/components/post/comment-form";
 import { LikeButton } from "@/components/post/like-button";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { getCurrentUser } from "@/lib/dal";
-import { getComments, getLikeCount, hasLiked } from "@/lib/engagement";
+import { getComments, getLikeCount, hasLiked, isBookmarked } from "@/lib/engagement";
 
 const dateFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" });
 
-/** Reads the session, so render it inside <Suspense>. */
+/** Like + save-for-later. Reads the session, so render it inside <Suspense>. */
 export async function PostLikes({ postId }: { postId: number }) {
   const user = await getCurrentUser();
-  const [count, liked] = await Promise.all([getLikeCount(postId), user ? hasLiked(postId, user.id) : false]);
-  return <LikeButton postId={postId} initial={{ liked, count }} signedIn={user !== null} />;
+  const [count, liked, saved] = await Promise.all([
+    getLikeCount(postId),
+    user ? hasLiked(postId, user.id) : false,
+    user ? isBookmarked(user.id, postId) : false,
+  ]);
+  return (
+    <div className="flex items-center gap-2">
+      <LikeButton postId={postId} initial={{ liked, count }} signedIn={user !== null} />
+      <BookmarkButton postId={postId} initial={saved} signedIn={user !== null} />
+    </div>
+  );
 }
 
 /** Reads the session, so render it inside <Suspense>. */

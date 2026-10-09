@@ -6,7 +6,12 @@ import { z } from "zod";
 export const SESSION_COOKIE = "session";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 
-const payloadSchema = z.object({ sub: z.string().regex(/^\d+$/) });
+// `v` is the user's token_version when the token was issued. Tokens minted before
+// versioning existed have no `v`, which counts as 0 (the column's default), so
+// shipping this didn't log anyone out.
+const payloadSchema = z.object({ sub: z.string().regex(/^\d+$/), v: z.number().int().nonnegative().optional() });
+
+export type Session = { userId: number; version: number };
 
 function key() {
   const secret = process.env.JWT_SECRET;
@@ -14,19 +19,26 @@ function key() {
   return new TextEncoder().encode(secret);
 }
 
-/** Verifies a raw token. Cookie-free so the proxy can use it on the incoming request. */
-export async function verifySessionToken(token: string): Promise<number | null> {
+async function decode(token: string): Promise<Session | null> {
   try {
     const { payload } = await jwtVerify(token, key(), { algorithms: ["HS256"] });
     const parsed = payloadSchema.safeParse(payload);
-    return parsed.success ? Number(parsed.data.sub) : null;
+    return parsed.success ? { userId: Number(parsed.data.sub), version: parsed.data.v ?? 0 } : null;
   } catch {
     return null;
   }
 }
 
-export async function createSession(userId: number) {
-  const token = await new SignJWT({})
+/**
+ * Signature + expiry only, no database. Cookie-free so the proxy can use it for
+ * optimistic redirects; real authorization also checks the version (see dal.ts).
+ */
+export async function verifySessionToken(token: string): Promise<number | null> {
+  return (await decode(token))?.userId ?? null;
+}
+
+export async function createSession(userId: number, version: number) {
+  const token = await new SignJWT({ v: version })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(String(userId))
     .setIssuedAt()
@@ -46,8 +58,8 @@ export async function destroySession() {
   (await cookies()).delete(SESSION_COOKIE);
 }
 
-/** Returns the authenticated user id, or null if absent/invalid/expired. */
-export async function getSessionUserId(): Promise<number | null> {
+/** The decoded session cookie, or null if absent/invalid/expired. Not yet checked against the database. */
+export async function getSession(): Promise<Session | null> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  return token ? verifySessionToken(token) : null;
+  return token ? decode(token) : null;
 }

@@ -14,14 +14,22 @@ export const AVATAR_MAX_BYTES = 2 * 1024 * 1024;
 
 export const avatarPrefix = (userId: number) => `avatars/${userId}/`;
 
-/** True only for an https URL in our store, inside this user's own avatar folder. */
-export function isOwnAvatarUrl(raw: string, userId: number): boolean {
+// Images inside posts: bigger than avatars, still shrunk in the browser before upload.
+export const POST_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
+export const POST_IMAGE_MAX_BYTES = 4 * 1024 * 1024;
+export const postImagePrefix = (userId: number) => `posts/${userId}/`;
+
+/** True only for an https URL in our store, inside the given folder (e.g. this user's avatars). */
+function isOwnBlobUrl(raw: string, prefix: string): boolean {
   const host = blobHost();
   if (!host) return false;
   try {
     const url = new URL(raw);
-    return url.protocol === "https:" && url.hostname === host && url.pathname.startsWith(`/${avatarPrefix(userId)}`) && !url.search;
+    return url.protocol === "https:" && url.hostname === host && url.pathname.startsWith(`/${prefix}`) && !url.search;
   } catch {
     return false;
   }
 }
+
+export const isOwnAvatarUrl = (raw: string, userId: number) => isOwnBlobUrl(raw, avatarPrefix(userId));
+export const isOwnPostImageUrl = (raw: string, userId: number) => isOwnBlobUrl(raw, postImagePrefix(userId));

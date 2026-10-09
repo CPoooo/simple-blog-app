@@ -62,11 +62,13 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Profile pictures (uploaded straight from the browser to Vercel Blob, cropped and shrunk on your device first; Neon only stores the link)
 - [x] Tag suggestions while you type (matches first, popular tags when the field is empty, keyboard friendly)
 - [x] Everything centered on mobile (except long post text, because centered paragraphs are a crime)
-- [ ] Image uploads in posts (the avatar upload pipeline can be reused)
-- [ ] Notifications (someone liked/commented/followed)
-- [ ] Bookmarks / reading list
-- [ ] Change email and password
-- [ ] Moderation (no reporting or image moderation yet; fine while it's small)
+- [x] Image uploads in posts (same pipeline as avatars, alt text included, only images uploaded here are allowed)
+- [x] Notifications for likes, comments, and follows (unlike/unfollow takes them back, so nobody gets spammed)
+- [x] Bookmarks / reading list (private, only you see yours)
+- [x] Change email and password (needs your current password; changing it signs you out everywhere else)
+- [x] Real session revocation (each login token carries a version, so "sign out everywhere" actually works with stateless JWTs)
+- [x] Seed account passwords rotated and kept out of git
+- [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
 ## Ideas to make the doomers sweat
 

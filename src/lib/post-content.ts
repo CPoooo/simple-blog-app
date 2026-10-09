@@ -34,6 +34,12 @@ export function docToText(node: JSONContent): string {
   return children.map(docToText).join(inline ? "" : " ").trim();
 }
 
+/** Every image node in a document, anywhere in the tree. */
+export function imagesOf(node: JSONContent): { src: string; alt: string }[] {
+  const own = node.type === "image" ? [{ src: String(node.attrs?.src ?? ""), alt: String(node.attrs?.alt ?? "") }] : [];
+  return [...own, ...(node.content ?? []).flatMap(imagesOf)];
+}
+
 export function makeExcerpt(text: string, max = 200): string {
   const clean = text.replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;

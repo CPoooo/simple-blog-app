@@ -2,13 +2,34 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { getDb, users } from "@/db";
-import { getSessionUserId } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
 export type CurrentUser = { id: number; username: string; avatarUrl: string | null };
 
 /**
- * The one place that turns a session cookie into a user. Callers must sit behind
- * a <Suspense> boundary (Cache Components).
+ * Cookie -> verified user, no caching. Use directly in Route Handlers; in
+ * components and actions use getCurrentUser()/requireUser() instead.
+ *
+ * A token only counts if its version still matches the user's token_version:
+ * changing your password bumps the version, which instantly kills every other
+ * session (stateless JWTs can't be revoked any other way). A valid token for a
+ * deleted user is also treated as signed out.
+ */
+export async function authenticate(): Promise<CurrentUser | null> {
+  const session = await getSession();
+  if (!session) return null;
+
+  const user = await getDb().query.users.findFirst({
+    where: eq(users.id, session.userId),
+    columns: { id: true, username: true, avatarUrl: true, tokenVersion: true },
+  });
+  if (!user || user.tokenVersion !== session.version) return null;
+  return { id: user.id, username: user.username, avatarUrl: user.avatarUrl };
+}
+
+/**
+ * The one place components turn a session cookie into a user. Callers must sit
+ * behind a <Suspense> boundary (Cache Components).
  *
  * 'use cache: private' because verifying the JWT compares its expiry with the
  * current time. Runtime prefetches (partialPrefetching) prerender with real
@@ -20,16 +41,7 @@ export type CurrentUser = { id: number; username: string; avatarUrl: string | nu
  */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   "use cache: private";
-
-  const userId = await getSessionUserId();
-  if (userId === null) return null;
-
-  // A valid token for a deleted user is treated as signed out.
-  const user = await getDb().query.users.findFirst({
-    where: eq(users.id, userId),
-    columns: { id: true, username: true, avatarUrl: true },
-  });
-  return user ?? null;
+  return authenticate();
 }
 
 export async function requireUser(): Promise<CurrentUser> {

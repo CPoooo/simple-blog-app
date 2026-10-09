@@ -22,6 +22,8 @@ export const users = pgTable(
     bio: text("bio"),
     // Public Vercel Blob URL (avatars/<userId>/...). The image lives in Blob, not Postgres.
     avatarUrl: text("avatar_url"),
+    // Baked into every session JWT. Bumping it (password change) signs out all other sessions.
+    tokenVersion: integer("token_version").notNull().default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
@@ -140,6 +142,45 @@ export const likes = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("likes_post_idx").on(t.postId)],
 );
 
+// A personal reading list. Private: only the owner ever sees their bookmarks.
+export const bookmarks = pgTable(
+  "bookmarks",
+  {
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: integer("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("bookmarks_user_created_idx").on(t.userId, t.createdAt)],
+);
+
+// "Someone liked / commented on / followed you." Rows disappear with whatever caused them:
+// unlike/unfollow deletes them in the action, a deleted comment or post cascades.
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id") // recipient
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    actorId: integer("actor_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type", { enum: ["like", "comment", "follow"] }).notNull(),
+    postId: integer("post_id").references(() => posts.id, { onDelete: "cascade" }),
+    commentId: integer("comment_id").references(() => comments.id, { onDelete: "cascade" }),
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("notifications_user_created_idx").on(t.userId, t.createdAt),
+    check("notifications_not_self", sql`${t.userId} <> ${t.actorId}`),
+  ],
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),
   comments: many(comments),
@@ -164,6 +205,18 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
 export const commentsRelations = relations(comments, ({ one }) => ({
   post: one(posts, { fields: [comments.postId], references: [posts.id] }),
   author: one(users, { fields: [comments.authorId], references: [users.id] }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  recipient: one(users, { fields: [notifications.userId], references: [users.id], relationName: "recipient" }),
+  actor: one(users, { fields: [notifications.actorId], references: [users.id], relationName: "actor" }),
+  post: one(posts, { fields: [notifications.postId], references: [posts.id] }),
+  comment: one(comments, { fields: [notifications.commentId], references: [comments.id] }),
+}));
+
+export const bookmarksRelations = relations(bookmarks, ({ one }) => ({
+  user: one(users, { fields: [bookmarks.userId], references: [users.id] }),
+  post: one(posts, { fields: [bookmarks.postId], references: [posts.id] }),
 }));
 
 export const likesRelations = relations(likes, ({ one }) => ({

@@ -29,6 +29,13 @@
       "when": 1791572471354,
       "tag": "0003_user_avatar",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791573463241,
+      "tag": "0004_bookmarks_notifications_token_version",
+      "breakpoints": true
     }
   ]
 }

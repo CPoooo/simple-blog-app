@@ -29,7 +29,8 @@ export function AccountMenu({ username, avatarUrl }: { username: string; avatarU
         <DropdownMenuItem render={<Link href="/feed" />}>Your feed</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={`/u/${username}`} />}>Your profile</DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/me/posts" />}>My posts</DropdownMenuItem>
-        <DropdownMenuItem render={<Link href="/settings/profile" />}>Profile settings</DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/me/bookmarks" />}>Reading list</DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/settings/profile" />}>Settings</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled={pending} onClick={() => startTransition(() => logout())}>
           {pending ? "Signing out…" : "Sign out"}

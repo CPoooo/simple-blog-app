@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 import { z } from "zod";
 import { follows, getDb, users } from "@/db";
 import { requireUser } from "@/lib/dal";
+import { notify, unnotify } from "@/lib/notifications";
 
 export type FollowResult = { following: boolean; followers: number } | { error: string };
 
@@ -24,8 +25,16 @@ export async function toggleFollow(rawUserId: unknown): Promise<FollowResult> {
     .delete(follows)
     .where(and(eq(follows.followerId, me.id), eq(follows.followingId, targetId)))
     .returning({ id: follows.followingId });
+  const event = { recipientId: targetId, actorId: me.id, type: "follow" as const };
   if (removed.length === 0) {
-    await db.insert(follows).values({ followerId: me.id, followingId: targetId }).onConflictDoNothing();
+    const [added] = await db
+      .insert(follows)
+      .values({ followerId: me.id, followingId: targetId })
+      .onConflictDoNothing()
+      .returning({ id: follows.followingId });
+    if (added) await notify(event);
+  } else {
+    await unnotify(event);
   }
 
   const [row] = await db.select({ n: count() }).from(follows).where(eq(follows.followingId, targetId));

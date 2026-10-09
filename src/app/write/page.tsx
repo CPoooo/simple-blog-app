@@ -19,7 +19,7 @@ export default function WritePage() {
 }
 
 async function NewPostEditor() {
-  await requireUser();
+  const user = await requireUser();
   const tagOptions = await getPopularTags(200);
-  return <PostEditor tagOptions={tagOptions} />;
+  return <PostEditor tagOptions={tagOptions} userId={user.id} />;
 }

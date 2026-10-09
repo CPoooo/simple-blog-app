@@ -331,9 +331,13 @@ async function rotatePasswords() {
   // File first: if the database step dies halfway, the new passwords aren't lost (just rotate again).
   writeCredentials(accounts);
   for (const [email, password] of Object.entries(accounts)) {
-    await db.update(users).set({ passwordHash: await bcrypt.hash(password, 12) }).where(eq(users.email, email));
+    // Bumping token_version also signs out any session opened with the old password.
+    await db
+      .update(users)
+      .set({ passwordHash: await bcrypt.hash(password, 12), tokenVersion: sql`${users.tokenVersion} + 1` })
+      .where(eq(users.email, email));
   }
-  console.log(`Rotated ${seeded.length} seed passwords. Only password hashes changed; everything else is untouched.`);
+  console.log(`Rotated ${seeded.length} seed passwords and signed out their old sessions. Nothing else changed.`);
   console.log(`New logins are in ${CREDENTIALS_FILE} (gitignored).`);
 }
 

@@ -174,6 +174,13 @@
   .prose-post hr {
     @apply my-8 border-border;
   }
+  .prose-post img {
+    @apply mx-auto my-8 h-auto max-w-full rounded-lg ring-1 ring-border;
+  }
+  /* In the editor: show which image is selected (Delete removes it). */
+  .prose-post img.ProseMirror-selectednode {
+    @apply ring-2 ring-primary;
+  }
 }
 
 @layer base {

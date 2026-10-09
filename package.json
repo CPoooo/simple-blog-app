@@ -19,6 +19,7 @@
     "@base-ui/react": "^1.9.0",
     "@neondatabase/serverless": "^1.2.0",
     "@tiptap/core": "^3.31.4",
+    "@tiptap/extension-image": "^3.31.4",
     "@tiptap/html": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
     "@tiptap/react": "^3.31.4",

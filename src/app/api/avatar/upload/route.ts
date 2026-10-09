@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { AVATAR_MAX_BYTES, AVATAR_TYPES, avatarPrefix } from "@/lib/blob";
-import { getSessionUserId } from "@/lib/session";
+import { authenticate } from "@/lib/dal";
 
 /**
  * Issues short-lived tokens so the browser can upload an avatar straight to Vercel Blob.
@@ -16,7 +16,8 @@ export async function POST(request: Request) {
       body,
       request,
       onBeforeGenerateToken: async (pathname) => {
-        const userId = await getSessionUserId();
+        // authenticate(), not just the JWT: a signed-out-everywhere token must not upload.
+        const userId = (await authenticate())?.id ?? null;
         if (userId === null) throw new Error("Sign in to upload a photo.");
         // Each user can only ever write inside their own folder.
         if (!pathname.startsWith(avatarPrefix(userId))) throw new Error("You can only upload your own avatar.");

@@ -16,11 +16,13 @@ type PostEditorProps = {
   post?: { id: number; title: string; content: JSONContent; published: boolean; tags: string[] };
   /** Existing tags, most-used first, for the suggestions dropdown. */
   tagOptions: TagOption[];
+  /** The author, for the image upload folder (the server enforces it anyway). */
+  userId: number;
 };
 
 const EMPTY_DOC: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
 
-export function PostEditor({ post, tagOptions }: PostEditorProps) {
+export function PostEditor({ post, tagOptions, userId }: PostEditorProps) {
   const [state, action, pending] = useActionState(savePost, undefined);
   const [title, setTitle] = useState(post?.title ?? "");
   const [tagInput, setTagInput] = useState(post?.tags.join(", ") ?? "");
@@ -87,7 +89,7 @@ export function PostEditor({ post, tagOptions }: PostEditorProps) {
       <div className="grid gap-2">
         <Label>Body</Label>
         <div className="overflow-hidden rounded-lg border border-input bg-card focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-          <PostEditorToolbar editor={editor} />
+          <PostEditorToolbar editor={editor} userId={userId} />
           <EditorContent editor={editor} />
         </div>
         {state?.errors?.content && (
