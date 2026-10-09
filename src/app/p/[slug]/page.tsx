@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { PostComments, PostLikes } from "@/components/post/engagement";
 import { TagList } from "@/components/tag-list";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPublishedPost } from "@/lib/posts";
@@ -35,11 +36,16 @@ async function Post({ params }: { params: Promise<{ slug: string }> }) {
       </header>
       {/* HTML is generated from a schema-validated Tiptap document, never raw user HTML. */}
       <div className="prose-post" dangerouslySetInnerHTML={{ __html: renderPostHtml(post.content) }} />
-      {post.tags.length > 0 && (
-        <footer className="mt-12 border-t pt-6">
-          <TagList tags={post.tags} />
-        </footer>
-      )}
+      <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t pt-6">
+        <TagList tags={post.tags} />
+        {/* Session-dependent bits stream in on their own; the article never waits for them. */}
+        <Suspense fallback={<Skeleton className="h-8 w-16" />}>
+          <PostLikes postId={post.id} />
+        </Suspense>
+      </footer>
+      <Suspense fallback={<Skeleton className="mt-12 h-40 w-full" />}>
+        <PostComments postId={post.id} />
+      </Suspense>
     </article>
   );
 }
