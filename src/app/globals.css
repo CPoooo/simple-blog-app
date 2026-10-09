@@ -288,3 +288,14 @@ html[data-read-focus="on"]:has(.reading) .reading-progress {
 html[data-read-focus="on"]:has(.reading) .back-fab {
   top: 1rem;
 }
+
+/* Focus mode hides the bottom tab bar too, so the floating buttons drop back down. */
+html[data-read-focus="on"]:has(.reading) .fab-top {
+  bottom: 1rem;
+}
+html[data-read-focus="on"]:has(.reading) .fab-aa {
+  bottom: 4.25rem;
+}
+html[data-read-focus="on"]:has(.reading) body {
+  padding-bottom: 0;
+}

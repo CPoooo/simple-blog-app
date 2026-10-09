@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Atkinson_Hyperlegible, Caveat, Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { FloatingControls } from "@/components/floating-controls";
-import { SiteHeader } from "@/components/site-header";
+import { BottomTabs, SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { READING_SCRIPT } from "@/lib/reading-prefs";
@@ -61,7 +61,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Reader preferences, applied before paint so a custom width/font never flashes. */}
         <script dangerouslySetInnerHTML={{ __html: READING_SCRIPT }} />
       </head>
-      <body className="paper-grain min-h-full flex flex-col">
+      {/* Bottom padding on phones so the tab bar never covers the end of the page. */}
+      <body className="paper-grain min-h-full flex flex-col pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
         <ThemeProvider>
           <a
             href="#main"
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </div>
           <SiteFooter />
+          <BottomTabs />
           {/* Reads the URL (usePathname), so it streams in after the shell instead of blocking prerender. */}
           <Suspense fallback={null}>
             <FloatingControls />

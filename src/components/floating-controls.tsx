@@ -86,7 +86,7 @@ export function FloatingControls() {
         }}
         className={cn(
           circle,
-          "fixed right-4 bottom-4 z-40",
+          "fab-top fixed right-4 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 md:bottom-4",
           showTop ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0",
         )}
       >

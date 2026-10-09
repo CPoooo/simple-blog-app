@@ -115,7 +115,7 @@ export function ReadingSettings() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={toggle}
-        className="fixed right-4 bottom-[4.25rem] z-50 size-11 rounded-full bg-background/70 font-heading text-lg shadow-lg ring-1 ring-foreground/10 backdrop-blur-md"
+        className="fab-aa fixed right-4 bottom-[calc(8rem+env(safe-area-inset-bottom))] z-50 size-11 md:bottom-[4.25rem] rounded-full bg-background/70 font-heading text-lg shadow-lg ring-1 ring-foreground/10 backdrop-blur-md"
       >
         Aa
       </Button>
@@ -126,7 +126,7 @@ export function ReadingSettings() {
           id={panelId}
           role="dialog"
           aria-label="Reading settings"
-          className="fixed right-4 bottom-32 z-50 max-h-[calc(100dvh-10rem)] w-[min(21rem,calc(100vw-2rem))] overflow-y-auto rounded-xl bg-popover p-4 text-popover-foreground shadow-xl ring-1 ring-foreground/10"
+          className="fixed right-4 bottom-[calc(11.5rem+env(safe-area-inset-bottom))] z-50 max-h-[calc(100dvh-14rem)] md:bottom-32 md:max-h-[calc(100dvh-10rem)] w-[min(21rem,calc(100vw-2rem))] overflow-y-auto rounded-xl bg-popover p-4 text-popover-foreground shadow-xl ring-1 ring-foreground/10"
         >
           <div className="mb-3 flex items-center justify-between">
             <p className="font-hand text-2xl text-primary">make it cozy</p>
