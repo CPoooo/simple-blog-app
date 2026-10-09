@@ -79,8 +79,6 @@ npm run dev
 
 Open http://localhost:3000 and register an account.
 
-Useful extras: `npm run build` for a production build, `npm run db:generate` after changing `src/db/schema.ts`, and `npm run db:studio` to poke at your data.
-
 ## Stack
 
 Next.js (App Router, Server Actions) · TypeScript (strict) · Drizzle ORM · Neon Postgres · shadcn/ui · Tailwind CSS · Tiptap · Zod · deploys to Vercel.
