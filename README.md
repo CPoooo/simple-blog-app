@@ -68,6 +68,8 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Change email and password (needs your current password; changing it signs you out everywhere else)
 - [x] Real session revocation (each login token carries a version, so "sign out everywhere" actually works with stateless JWTs)
 - [x] Seed account passwords rotated and kept out of git
+- [x] Deleting an image from a post deletes the actual file too (unless another post still uses it)
+- [x] Cozy reading mode: an "Aa" panel on every post for page width, text size, line spacing, font (including Atkinson Hyperlegible, made for low-vision readers), sepia or high-contrast paper, and a focus mode that hides everything but the post. Saved per device, works without an account, no flash on load.
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
 ## Ideas to make the doomers sweat

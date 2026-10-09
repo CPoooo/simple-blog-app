@@ -11,7 +11,7 @@ import { unreadCount } from "@/lib/notifications";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <header className="site-chrome sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-4">
         <nav className="flex items-center gap-1">
           <Link href="/" className="mr-2" aria-label="Rabbit Holes, home">

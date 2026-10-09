@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Caveat, Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { Atkinson_Hyperlegible, Caveat, Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { READING_SCRIPT } from "@/lib/reading-prefs";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -29,6 +30,13 @@ const caveat = Caveat({
   subsets: ["latin"],
 });
 
+// Designed by the Braille Institute for low-vision readers; an option in the reading panel.
+const hyperlegible = Atkinson_Hyperlegible({
+  variable: "--font-hyper",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: `${site.name} · ${site.tagline}`, template: `%s · ${site.name}` },
@@ -45,8 +53,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} ${caveat.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} ${caveat.variable} ${hyperlegible.variable} h-full antialiased`}
     >
+      <head>
+        {/* Reader preferences, applied before paint so a custom width/font never flashes. */}
+        <script dangerouslySetInnerHTML={{ __html: READING_SCRIPT }} />
+      </head>
       <body className="paper-grain min-h-full flex flex-col">
         <ThemeProvider>
           <a

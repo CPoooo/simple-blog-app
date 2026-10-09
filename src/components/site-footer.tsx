@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t">
+    <footer className="site-chrome mt-24 border-t">
       <div className="mx-auto grid max-w-5xl justify-items-center gap-8 px-4 py-12 text-center sm:grid-cols-[1fr_auto] sm:justify-items-stretch sm:text-left">
         <div className="max-w-sm">
           <div className="flex items-center justify-center gap-2 font-heading text-base font-semibold sm:justify-start">

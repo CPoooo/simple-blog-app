@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { FollowButton } from "@/components/follow-button";
 import { PostComments, PostLikes } from "@/components/post/engagement";
 import { ReadingProgress } from "@/components/post/reading-progress";
+import { ReadingSettings } from "@/components/post/reading-settings";
 import { TagList } from "@/components/tag-list";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/user-avatar";
@@ -36,8 +37,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default function PostPage({ params }: { params: Params }) {
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-12">
+    // .reading scopes the reader preferences (width, size, font, tint, focus) to this page.
+    <main className="reading mx-auto w-full max-w-(--read-width) flex-1 px-4 py-12">
       <ReadingProgress />
+      <ReadingSettings />
       <Suspense fallback={<PostSkeleton />}>
         <Post params={params} />
       </Suspense>
@@ -84,7 +87,8 @@ async function Post({ params }: { params: Params }) {
           <PostLikes postId={post.id} />
         </Suspense>
       </footer>
-      <aside aria-label="About the author" className="mt-10 flex flex-col items-center gap-4 rounded-xl bg-muted/50 p-5 text-center sm:flex-row sm:items-start sm:text-left">
+      {/* reading-extra: hidden in focus mode, so it's just the post. */}
+      <aside aria-label="About the author" className="reading-extra mt-10 flex flex-col items-center gap-4 rounded-xl bg-muted/50 p-5 text-center sm:flex-row sm:items-start sm:text-left">
         <UserAvatar username={post.author.username} src={post.author.avatarUrl} className="size-12 text-xl" />
         <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">Written by</p>
@@ -97,9 +101,11 @@ async function Post({ params }: { params: Params }) {
           <AuthorFollow authorId={post.author.id} username={post.author.username} />
         </Suspense>
       </aside>
-      <Suspense fallback={<Skeleton className="mt-12 h-40 w-full" />}>
-        <PostComments postId={post.id} />
-      </Suspense>
+      <div className="reading-extra">
+        <Suspense fallback={<Skeleton className="mt-12 h-40 w-full" />}>
+          <PostComments postId={post.id} />
+        </Suspense>
+      </div>
     </article>
   );
 }
