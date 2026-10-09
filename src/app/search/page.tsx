@@ -63,15 +63,15 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
   }
 
   return (
-    <div className="mt-10 grid gap-10">
+    <div className="mt-10 grid grid-cols-1 gap-10">
       {people.length > 0 && (
         <section aria-labelledby="people-heading">
           <h2 id="people-heading" className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
             People
           </h2>
-          <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {people.map((p) => (
-              <li key={p.id}>
+              <li key={p.id} className="min-w-0">
                 <Link href={`/u/${p.username}`} className="flex items-center gap-3 rounded-lg p-2 -m-2 hover:bg-muted/60">
                   <UserAvatar username={p.username} src={p.avatarUrl} />
                   <span className="min-w-0">

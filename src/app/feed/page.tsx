@@ -52,7 +52,7 @@ export default function FeedPage({ searchParams }: { searchParams: SearchParams 
           <Feed searchParams={searchParams} />
         </Suspense>
       </section>
-      <aside aria-labelledby="suggest-heading" className="lg:pt-16">
+      <aside aria-labelledby="suggest-heading" className="min-w-0 lg:pt-16">
         <h2 id="suggest-heading" className="text-center font-hand text-2xl text-primary sm:text-left">
           worth following
         </h2>
@@ -194,7 +194,7 @@ async function Suggestions() {
   if (people.length === 0) return <p className="mt-3 text-center text-sm text-muted-foreground sm:text-left">You follow everyone worth following. Respect.</p>;
 
   return (
-    <ul className="mt-4 grid gap-5">
+    <ul className="mt-4 grid grid-cols-1 gap-5">
       {people.map((p) => (
         <li key={p.id} className="grid gap-2">
           <div className="flex items-center gap-3">
