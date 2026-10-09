@@ -23,9 +23,12 @@ export async function getPublishedPost(slug: string) {
   const post = await getDb().query.posts.findFirst({
     where: and(eq(posts.slug, slug), isNotNull(posts.publishedAt)),
     columns: { id: true, slug: true, title: true, content: true, excerpt: true, readingMinutes: true, publishedAt: true },
-    with: { author: { columns: { id: true, username: true } }, ...tagNames },
+    with: { author: { columns: { id: true, username: true, bio: true } }, ...tagNames },
   });
-  return post ? { ...flattenTags(post), content: post.content as JSONContent } : null;
+  if (!post) return null;
+  // Profile edits (username, bio) refresh this entry via updateTag(`user:${id}`).
+  cacheTag(`user:${post.author.id}`);
+  return { ...flattenTags(post), content: post.content as JSONContent };
 }
 
 /** The author's own post (draft or published). Authorization lives in the WHERE clause. */
@@ -70,9 +73,11 @@ export async function listPublishedByTag(name: string, limit = 30) {
     where: and(isNotNull(posts.publishedAt), inArray(posts.id, withTag)),
     orderBy: desc(posts.publishedAt),
     limit,
-    columns: { id: true, slug: true, title: true, excerpt: true, readingMinutes: true, publishedAt: true },
+    columns: { id: true, authorId: true, slug: true, title: true, excerpt: true, readingMinutes: true, publishedAt: true },
     with: { author: { columns: { username: true } }, ...tagNames },
   });
+  const authorIds = [...new Set(rows.map((r) => r.authorId))];
+  if (authorIds.length) cacheTag(...authorIds.map((id) => `user:${id}`));
   return rows.map(flattenTags);
 }
 

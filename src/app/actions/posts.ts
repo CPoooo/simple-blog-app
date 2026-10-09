@@ -50,6 +50,9 @@ async function upsertTags(db: Db, names: string[]): Promise<number[]> {
 function refreshCaches(slug: string, tagNames: string[]) {
   updateTag(`post:${slug}`);
   for (const name of new Set(tagNames)) updateTag(`tag:${name}`);
+  // Discover's first page and the popular-tag chips both depend on what's published.
+  updateTag("discover");
+  updateTag("tags");
 }
 
 export async function savePost(_prev: PostFormState, formData: FormData): Promise<PostFormState> {

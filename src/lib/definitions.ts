@@ -12,16 +12,26 @@ const email = z
   .toLowerCase()
   .pipe(z.email("Enter a valid email"));
 
+// Shared by sign-up and profile editing so the rules can't drift apart.
+const username = z
+  .string({ error: "Username is required" })
+  .trim()
+  .toLowerCase()
+  .min(3, "Username must be at least 3 characters")
+  .max(20, "Username must be at most 20 characters")
+  .regex(/^[a-z0-9_]+$/, "Use only letters, numbers, and underscores");
+
 export const registerSchema = z.object({
-  username: z
-    .string({ error: "Username is required" })
-    .trim()
-    .toLowerCase()
-    .min(3, "Username must be at least 3 characters")
-    .max(20, "Username must be at most 20 characters")
-    .regex(/^[a-z0-9_]+$/, "Use only letters, numbers, and underscores"),
+  username,
   email,
   password,
+});
+
+export const BIO_MAX = 280;
+
+export const profileSchema = z.object({
+  username,
+  bio: z.string().trim().max(BIO_MAX, `Keep your bio under ${BIO_MAX} characters`),
 });
 
 export const loginSchema = z.object({

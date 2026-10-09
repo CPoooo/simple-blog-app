@@ -43,6 +43,11 @@ async function Post({ params }: { params: Promise<{ slug: string }> }) {
           <PostLikes postId={post.id} />
         </Suspense>
       </footer>
+      <aside aria-label="About the author" className="mt-10 rounded-xl bg-muted/50 p-5">
+        <p className="text-sm text-muted-foreground">Written by</p>
+        <p className="font-heading text-lg font-semibold">@{post.author.username}</p>
+        {post.author.bio && <p className="mt-1 text-sm leading-6 text-muted-foreground">{post.author.bio}</p>}
+      </aside>
       <Suspense fallback={<Skeleton className="mt-12 h-40 w-full" />}>
         <PostComments postId={post.id} />
       </Suspense>

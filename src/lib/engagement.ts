@@ -28,10 +28,14 @@ export async function getComments(postId: number) {
   cacheTag(`comments:${postId}`);
   cacheLife("minutes");
 
-  return getDb().query.comments.findMany({
+  const thread = await getDb().query.comments.findMany({
     where: eq(comments.postId, postId),
     orderBy: asc(comments.createdAt),
     columns: { id: true, body: true, createdAt: true, authorId: true },
     with: { author: { columns: { username: true } } },
   });
+  // A commenter renaming themselves must refresh threads showing their old name.
+  const authorIds = [...new Set(thread.map((c) => c.authorId))];
+  if (authorIds.length) cacheTag(...authorIds.map((id) => `user:${id}`));
+  return thread;
 }

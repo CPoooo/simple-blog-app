@@ -48,6 +48,9 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [ ] Comments
 - [ ] Follow users
 - [ ] Discover page (top posts, tag filtering)
+- [] Cool landing page that explains the website 
+- [] Creative name other than "Blog"
+- [] add hover:cursor-pointer to the light/dark toggle
 
 ## Run it yourself
 

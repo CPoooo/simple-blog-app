@@ -1,18 +1,23 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { logout } from "@/app/actions/auth";
+import { AccountMenu } from "@/components/account-menu";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/dal";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="font-heading text-lg font-semibold tracking-tight">
-          Blog
-        </Link>
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-4">
+        <nav className="flex items-center gap-1">
+          <Link href="/" className="mr-2 font-heading text-lg font-semibold tracking-tight">
+            Blog
+          </Link>
+          <Link href="/discover" className={buttonVariants({ variant: "ghost" })}>
+            Discover
+          </Link>
+        </nav>
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Suspense fallback={<Skeleton className="h-8 w-28" />}>
@@ -45,14 +50,7 @@ async function AccountNav() {
       <Link href="/write" className={buttonVariants({ variant: "ghost" })}>
         Write
       </Link>
-      <Link href="/me/posts" className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline">
-        @{user.username}
-      </Link>
-      <form action={logout}>
-        <Button type="submit" variant="outline">
-          Sign out
-        </Button>
-      </form>
+      <AccountMenu username={user.username} />
     </>
   );
 }
