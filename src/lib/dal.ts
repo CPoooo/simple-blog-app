@@ -1,5 +1,4 @@
 import "server-only";
-import { cache } from "react";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { getDb, users } from "@/db";
@@ -8,11 +7,20 @@ import { getSessionUserId } from "@/lib/session";
 export type CurrentUser = { id: number; username: string };
 
 /**
- * The one place that turns a session cookie into a user. Deduped per request,
- * so any number of components can call it. Reads cookies, so callers must sit
- * behind a <Suspense> boundary (Cache Components).
+ * The one place that turns a session cookie into a user. Callers must sit behind
+ * a <Suspense> boundary (Cache Components).
+ *
+ * 'use cache: private' because verifying the JWT compares its expiry with the
+ * current time. Runtime prefetches (partialPrefetching) prerender with real
+ * cookies but forbid reading the clock in an uncached scope; a private cache
+ * scope is allowed to, and its result only ever lives in this user's browser,
+ * never in a shared server cache. It also dedupes calls within one request.
+ * Login/logout set or delete the cookie in a Server Action, which re-renders
+ * the page, so the header never shows a stale user after signing in or out.
  */
-export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
+export async function getCurrentUser(): Promise<CurrentUser | null> {
+  "use cache: private";
+
   const userId = await getSessionUserId();
   if (userId === null) return null;
 
@@ -22,7 +30,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     columns: { id: true, username: true },
   });
   return user ?? null;
-});
+}
 
 export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser();
