@@ -36,10 +36,12 @@ export function PostEditor({ post }: PostEditorProps) {
     onUpdate: ({ editor }) => setContent(JSON.stringify(editor.getJSON())),
   });
 
-  // Plain text length, so the publish button can be disabled for an empty body.
+  // Lets us disable Publish on an empty body. Reads the doc directly instead of editor.getText():
+  // during unmount / Strict Mode remounts the selector can run on an already-destroyed editor,
+  // where destroy() has nulled editor.schema (which getText needs) but state.doc is still intact.
   const hasText = useEditorState({
     editor,
-    selector: (ctx) => Boolean(ctx.editor?.getText().trim()),
+    selector: (ctx) => Boolean(ctx.editor?.state.doc.textContent.trim()),
   });
 
   useEffect(() => {
