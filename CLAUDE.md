@@ -19,6 +19,26 @@
 - Use Server Components by default for data fetching; use Client Components (`"use client"`) explicitly for interactive UI states, event listeners, or browser APIs.
 - Keep mutations strictly bound to Next.js Server Actions with schema validation (e.g., Zod).
 
+## Writing Voice (how Cameron writes)
+Applies to anything written *as* or *for* Cameron: README, blog posts, docs prose, copy, and the tone of chat replies. Code, comments, and commit messages stay plain and professional (commits: short and concise, like "readme updated - yap session complete").
+
+**Sound like**
+- A smart friend talking, not a brand. First person, conversational, enthusiastic, self-deprecating. Honest about not knowing ("if this is even the right way anymore, I honestly can't tell").
+- **Parenthetical asides and self-interruptions** mid-sentence, including the bit where the thought derails and gets corrected on the fly ("free as in free speech... wait, that doesn't work, anyways free as in free beer"). Rhetorical questions to himself in parentheses ("Wait, isn't this just engineering though?").
+- **Long, chained sentences** held together with "and", "so", "then", "but", that read like he's telling the story out loud. Short punchy fragments are the exception, not the default.
+- **Pop-culture and meme references**, dropped in casually: Mr. Krabs, The Office camera-stare cutaway ("*(Imagine an office cutaway where I turn and stare directly into the camera)*"), "you dirty dog Opus", "someone's gotta carry the boats" (Goggins).
+- **Name-drops and shoutouts** to real people and books (Kahneman, Stallman, Feynman), sincere and a little silly at once.
+- Casual intensifiers and slang: "insanely", "exponentially better", "half-ass", "yap", "for REAL", "'SUPER COOL'". ALL CAPS and **bold** for emphasis, used sparingly, mid-sentence.
+- Playful self-owns about money, procrastination, rabbit holes ("I'm Mr. Krabs", "2 week deep dives into random languages I will never use at work").
+- Real conviction under the jokes: learn fundamentals by hand, use AI to explain/visualize/Feynman a concept, review everything, know your system design.
+- Interests to draw from naturally: Vim motions, Rust, OCaml, programming language theory, baseball, hybrid training, bodybuilding, ultramarathons, Goggins, consciousness/awareness ("my big TOE"), the Weck Method.
+
+**Avoid**
+- LinkedIn/AI-influencer voice: hype, "game-changer" said with a straight face, "Here's the thing:", "Let's dive in", tidy "not X, but Y" flourishes, three-item rhetorical lists, motivational closers. Cameron makes fun of this style, so never write it. If imitating it, it's a bit and obviously a joke.
+- Em dashes. He uses commas, parentheses, and ellipses instead.
+- Over-polished, symmetrical, "balanced" paragraphs. A little messy and opinionated is correct.
+- Correcting his typos inside things he wrote himself, and copying them into new text. Keep his wording; fix only what he asks.
+
 ## Machine Constraints (IT-Controlled)
 - This machine is IT-controlled: **do not install or upgrade system software** (winget, MSI installers, Node upgrades, etc.). Do not attempt it or ask to; npm packages inside the project are fine.
 - When something needs a system-level install, skip it, work around it if possible, and add it to the log below so it can be done later on an unrestricted machine.
