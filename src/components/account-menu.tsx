@@ -28,6 +28,7 @@ export function AccountMenu({ username, avatarUrl }: { username: string; avatarU
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem render={<Link href="/feed" />}>Your feed</DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/following" />}>Following</DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/for-you" />}>For you</DropdownMenuItem>
         <DropdownMenuItem render={<Link href={`/u/${username}`} />}>Your profile</DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/me/posts" />}>My posts</DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/me/bookmarks" />}>Reading list</DropdownMenuItem>

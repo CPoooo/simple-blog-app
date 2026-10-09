@@ -52,6 +52,9 @@ export default async function Landing() {
             <Link href="/discover" className="group text-base font-medium underline decoration-primary/40 decoration-2 underline-offset-8 hover:decoration-primary">
               See what&apos;s down there <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </Link>
+            <a href="/surprise" className="text-base font-medium text-muted-foreground underline decoration-dotted underline-offset-8 hover:text-foreground">
+              or surprise me
+            </a>
           </div>
         </div>
         <HoleCrossSection />

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Atkinson_Hyperlegible, Caveat, Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
+import { FloatingControls } from "@/components/floating-controls";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -68,10 +70,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             Skip to content
           </a>
           <SiteHeader />
-          <div id="main" className="flex flex-1 flex-col">
+          <div id="main" tabIndex={-1} className="flex flex-1 flex-col outline-none">
             {children}
           </div>
           <SiteFooter />
+          {/* Reads the URL (usePathname), so it streams in after the shell instead of blocking prerender. */}
+          <Suspense fallback={null}>
+            <FloatingControls />
+          </Suspense>
           <Toaster />
         </ThemeProvider>
       </body>

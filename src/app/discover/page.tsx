@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { DiscoverFeed } from "@/components/discover/discover-feed";
+import { Dices, Sparkles } from "lucide-react";
 import { badgeVariants } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getFirstDiscoverPage, getPopularTags } from "@/lib/discover";
 import { normalizeTag } from "@/lib/tags";
@@ -17,6 +19,14 @@ export default function DiscoverPage({ searchParams }: { searchParams: SearchPar
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-12">
       <h1 className="text-center sm:text-left text-4xl font-semibold">Discover</h1>
       <p className="mt-2 text-center sm:text-left text-muted-foreground">The best of the blog right now. Likes count most, but fresh posts get a head start.</p>
+      <div className="mt-5 flex flex-wrap justify-center gap-2 sm:justify-start">
+        <Link href="/for-you" className={buttonVariants({ variant: "outline" })}>
+          <Sparkles aria-hidden /> Show me something I&apos;ll like
+        </Link>
+        <a href="/surprise" className={buttonVariants({ variant: "ghost" })}>
+          <Dices aria-hidden /> Surprise me
+        </a>
+      </div>
       <Suspense fallback={<FeedSkeleton />}>
         <Discover searchParams={searchParams} />
       </Suspense>

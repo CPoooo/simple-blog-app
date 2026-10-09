@@ -15,9 +15,9 @@ export default function NotFound() {
         <Link href="/discover" className={buttonVariants()}>
           Find something good
         </Link>
-        <Link href="/" className={buttonVariants({ variant: "outline" })}>
-          Go home
-        </Link>
+        <a href="/surprise" className={buttonVariants({ variant: "outline" })}>
+          Surprise me
+        </a>
       </div>
     </main>
   );

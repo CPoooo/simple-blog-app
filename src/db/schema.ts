@@ -142,6 +142,21 @@ export const likes = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("likes_post_idx").on(t.postId)],
 );
 
+// Tags a reader told us they care about; drives "Show me something I'll like".
+export const userInterests = pgTable(
+  "user_interests",
+  {
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tagId: integer("tag_id")
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.tagId] })],
+);
+
 // A personal reading list. Private: only the owner ever sees their bookmarks.
 export const bookmarks = pgTable(
   "bookmarks",

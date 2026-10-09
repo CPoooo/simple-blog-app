@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Bell, Search } from "lucide-react";
+import { Bell, Dices, Search } from "lucide-react";
 import { AccountMenu } from "@/components/account-menu";
 import { Wordmark } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -25,6 +25,10 @@ export function SiteHeader() {
           <Link href="/search" aria-label="Search" className={buttonVariants({ variant: "ghost", size: "icon" })}>
             <Search />
           </Link>
+          {/* A plain link to a redirecting route: prefetching would pick (and cache) a post early. */}
+          <a href="/surprise" aria-label="Surprise me: open a random post" title="Surprise me" className={buttonVariants({ variant: "ghost", size: "icon" })}>
+            <Dices />
+          </a>
           <ThemeToggle />
           <Suspense fallback={<Skeleton className="h-8 w-28" />}>
             <AccountNav />
@@ -54,6 +58,9 @@ async function AccountNav() {
   const unread = await unreadCount(user.id);
   return (
     <>
+      <Link href="/following" className={buttonVariants({ variant: "ghost", className: "hidden sm:inline-flex" })}>
+        Following
+      </Link>
       <Link href="/write" className={buttonVariants({ variant: "ghost" })}>
         Write
       </Link>

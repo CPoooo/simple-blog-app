@@ -26,7 +26,7 @@ import { config } from "dotenv";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq, like, sql } from "drizzle-orm";
-import { comments, follows, likes, postTags, posts, tags, users } from "../src/db/schema";
+import { comments, follows, likes, postTags, posts, tags, userInterests, users } from "../src/db/schema";
 import { normalizeTag } from "../src/lib/tags";
 
 config({ path: ".env.local" });
@@ -297,7 +297,8 @@ async function removeSeed() {
   // Tags no longer used by any post (the seed's own, now orphaned).
   const orphanTags = await db
     .delete(tags)
-    .where(sql`${tags.id} not in (select ${postTags.tagId} from ${postTags})`)
+    // ...but keep any tag a real reader picked as an interest (deleting it would cascade their choice away).
+    .where(sql`${tags.id} not in (select ${postTags.tagId} from ${postTags}) and ${tags.id} not in (select ${userInterests.tagId} from ${userInterests})`)
     .returning({ name: tags.name });
   console.log(`Removed ${removed.length} seed users (and everything they made), ${orphanTags.length} unused tags.`);
 }

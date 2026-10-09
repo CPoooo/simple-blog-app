@@ -69,6 +69,11 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Real session revocation (each login token carries a version, so "sign out everywhere" actually works with stateless JWTs)
 - [x] Seed account passwords rotated and kept out of git
 - [x] Deleting an image from a post deletes the actual file too (unless another post still uses it)
+- [x] Home feed like Twitter/TikTok: story-style bubbles of the people you follow, Latest or Most liked, filter by tag or person, infinite scroll, like right from the feed
+- [x] Following page (everyone you follow, most recently active first)
+- [x] "Surprise me" (dice in the header): drops you into a random post, never the one you're already on
+- [x] "Show me something I'll like": pick your interests, get a weighted-random pick with a "why we picked this" (learns from your likes if you haven't picked any)
+- [x] iOS-style floating back button and back-to-top circle
 - [x] Cozy reading mode: an "Aa" panel on every post for page width, text size, line spacing, font (including Atkinson Hyperlegible, made for low-vision readers), sepia or high-contrast paper, and a focus mode that hides everything but the post. Saved per device, works without an account, no flash on load.
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
