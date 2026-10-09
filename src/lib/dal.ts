@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { getDb, users } from "@/db";
 import { getSessionUserId } from "@/lib/session";
 
-export type CurrentUser = { id: number; username: string };
+export type CurrentUser = { id: number; username: string; avatarUrl: string | null };
 
 /**
  * The one place that turns a session cookie into a user. Callers must sit behind
@@ -27,7 +27,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   // A valid token for a deleted user is treated as signed out.
   const user = await getDb().query.users.findFirst({
     where: eq(users.id, userId),
-    columns: { id: true, username: true },
+    columns: { id: true, username: true, avatarUrl: true },
   });
   return user ?? null;
 }

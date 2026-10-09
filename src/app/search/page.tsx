@@ -73,7 +73,7 @@ async function Results({ searchParams }: { searchParams: SearchParams }) {
             {people.map((p) => (
               <li key={p.id}>
                 <Link href={`/u/${p.username}`} className="flex items-center gap-3 rounded-lg p-2 -m-2 hover:bg-muted/60">
-                  <UserAvatar username={p.username} />
+                  <UserAvatar username={p.username} src={p.avatarUrl} />
                   <span className="min-w-0">
                     <span className="block font-medium">@{p.username}</span>
                     {p.bio && <span className="block truncate text-sm text-muted-foreground">{p.bio}</span>}

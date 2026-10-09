@@ -23,7 +23,7 @@ export async function getProfile(username: string) {
   const db = getDb();
   const user = await db.query.users.findFirst({
     where: eq(users.username, username),
-    columns: { id: true, username: true, bio: true, createdAt: true },
+    columns: { id: true, username: true, bio: true, avatarUrl: true, createdAt: true },
   });
   if (!user) return null;
   cacheTag(`user:${user.id}`, `follows:${user.id}`);
@@ -77,7 +77,7 @@ export async function getFeed(userId: number, limit = 30) {
 /** People you don't follow yet, best writers first (published posts, then likes received). */
 export async function getSuggestions(userId: number, limit = 5) {
   const result = await getDb().execute(sql`
-    select u.id, u.username, u.bio,
+    select u.id, u.username, u.bio, u.avatar_url as "avatarUrl",
            count(distinct p.id)::int as posts,
            count(l.post_id)::int as likes
       from users u
@@ -89,5 +89,5 @@ export async function getSuggestions(userId: number, limit = 5) {
      order by posts desc, likes desc, u.username
      limit ${limit}
   `);
-  return result.rows as { id: number; username: string; bio: string | null; posts: number; likes: number }[];
+  return result.rows as { id: number; username: string; bio: string | null; avatarUrl: string | null; posts: number; likes: number }[];
 }

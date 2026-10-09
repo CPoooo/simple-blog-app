@@ -5,6 +5,7 @@ import { DeletePostButton } from "@/components/editor/delete-post-button";
 import { PostEditor } from "@/components/editor/post-editor";
 import { Skeleton } from "@/components/ui/skeleton";
 import { requireUser } from "@/lib/dal";
+import { getPopularTags } from "@/lib/discover";
 import { getOwnPost } from "@/lib/posts";
 
 export const metadata: Metadata = { title: "Edit post" };
@@ -25,7 +26,7 @@ async function EditPost({ params }: { params: Promise<{ id: string }> }) {
   if (!Number.isInteger(id) || id <= 0) notFound();
 
   // Someone else's post and a missing post look identical: both 404.
-  const post = await getOwnPost(id, user.id);
+  const [post, tagOptions] = await Promise.all([getOwnPost(id, user.id), getPopularTags(200)]);
   if (!post) notFound();
 
   return (
@@ -36,6 +37,7 @@ async function EditPost({ params }: { params: Promise<{ id: string }> }) {
       </div>
       <PostEditor
         post={{ id: post.id, title: post.title, content: post.content, published: post.publishedAt !== null, tags: post.tags }}
+        tagOptions={tagOptions}
       />
     </>
   );

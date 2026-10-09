@@ -5,6 +5,7 @@ import type { JSONContent } from "@tiptap/core";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { toast } from "sonner";
 import { savePost } from "@/app/actions/posts";
+import { TagInput, type TagOption } from "@/components/editor/tag-input";
 import { PostEditorToolbar } from "@/components/editor/toolbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +14,13 @@ import { editorExtensions } from "@/lib/editor-extensions";
 
 type PostEditorProps = {
   post?: { id: number; title: string; content: JSONContent; published: boolean; tags: string[] };
+  /** Existing tags, most-used first, for the suggestions dropdown. */
+  tagOptions: TagOption[];
 };
 
 const EMPTY_DOC: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
 
-export function PostEditor({ post }: PostEditorProps) {
+export function PostEditor({ post, tagOptions }: PostEditorProps) {
   const [state, action, pending] = useActionState(savePost, undefined);
   const [title, setTitle] = useState(post?.title ?? "");
   const [tagInput, setTagInput] = useState(post?.tags.join(", ") ?? "");
@@ -96,18 +99,15 @@ export function PostEditor({ post }: PostEditorProps) {
 
       <div className="grid gap-2">
         <Label htmlFor="tags">Tags</Label>
-        <Input
-          id="tags"
-          name="tags"
+        <TagInput
           value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          placeholder="nextjs, rust, lifting"
-          autoComplete="off"
-          aria-invalid={state?.errors?.tags ? true : undefined}
-          aria-describedby="tags-hint"
+          onChange={setTagInput}
+          options={tagOptions}
+          invalid={Boolean(state?.errors?.tags)}
+          describedBy="tags-hint"
         />
         <p id="tags-hint" className={state?.errors?.tags ? "text-sm text-destructive" : "text-sm text-muted-foreground"}>
-          {state?.errors?.tags?.[0] ?? "Up to 5, separated by commas. Spaces become dashes."}
+          {state?.errors?.tags?.[0] ?? "Up to 5, separated by commas. Pick an existing tag so your post shows up with similar ones."}
         </p>
       </div>
 

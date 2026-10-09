@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { PostEditor } from "@/components/editor/post-editor";
 import { Skeleton } from "@/components/ui/skeleton";
 import { requireUser } from "@/lib/dal";
+import { getPopularTags } from "@/lib/discover";
 
 export const metadata: Metadata = { title: "New post" };
 
@@ -19,5 +20,6 @@ export default function WritePage() {
 
 async function NewPostEditor() {
   await requireUser();
-  return <PostEditor />;
+  const tagOptions = await getPopularTags(200);
+  return <PostEditor tagOptions={tagOptions} />;
 }

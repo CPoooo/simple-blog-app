@@ -58,10 +58,43 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Login/sign-up rate limiting (in Postgres, still no Redis)
 - [x] Seed script with fake users who are suspiciously into the same things I am
 - [x] Deploy to Vercel ([live here](https://simple-blog-app-flax.vercel.app/))
-- [ ] Image uploads in posts
+- [x] Unique usernames (database unique index, case-insensitive, checked on sign-up and on rename)
+- [x] Profile pictures (uploaded straight from the browser to Vercel Blob, cropped and shrunk on your device first; Neon only stores the link)
+- [x] Tag suggestions while you type (matches first, popular tags when the field is empty, keyboard friendly)
+- [x] Everything centered on mobile (except long post text, because centered paragraphs are a crime)
+- [ ] Image uploads in posts (the avatar upload pipeline can be reused)
 - [ ] Notifications (someone liked/commented/followed)
 - [ ] Bookmarks / reading list
 - [ ] Change email and password
+- [ ] Moderation (no reporting or image moderation yet; fine while it's small)
+
+## Ideas to make the doomers sweat
+
+Things this is missing that would make even the angriest "AI code is all slop" portfolio reviewer squint and go *huh, ok.* Roughly ordered by how much I think they'd flex.
+
+**Prove it works (the stuff reviewers actually look for)**
+- **A real test suite in the repo, running in CI.** Every feature here was verified with end-to-end scripts against a real server and database during development. They just live outside the repo right now. Move them into Playwright, run them on every PR with GitHub Actions against a throwaway Neon branch, and put the green badge at the top of this README.
+- **Neon branch per pull request.** Every PR gets its own copy of the database, so migrations get tested on real data before they ever touch production. Very "I've done this at a real job."
+- **Lighthouse and accessibility scores in CI** (axe-core plus Lighthouse budgets), failing the build if performance or a11y drops.
+- **Architecture Decision Records (ADRs).** Short docs on *why*: JWT without Redis, Postgres rate limiting, cursor pagination, cache tags. Reviewers love the why more than the what.
+- **An honest "how I built this with an agent" write-up.** What the agent got wrong, what I caught, and the bugs that only showed up in testing. Turn the doomer argument into the content.
+
+**Features with real engineering underneath**
+- **Rabbit hole maps.** Posts link to each other; render the whole site (or one person's obsessions) as an interactive graph you can fall through. Very on brand, very screenshot-able.
+- **Semantic search and "related posts"** with pgvector embeddings right inside Neon. No extra service, and "it understands meaning, not just keywords" is a strong demo.
+- **Marginalia.** Highlight a sentence in a post and leave a note in the margin, like a library book. Comments, but way cooler.
+- **Passkey login (WebAuthn).** No passwords at all. Feels like the future, and it is hard to get right.
+- **Federation (ActivityPub).** Follow a Rabbit Holes writer from Mastodon. Absurdly impressive for a side project.
+- **Live notifications** with server-sent events, plus a weekly email digest.
+- **Code blocks that look great** (Shiki syntax highlighting), since half my posts will be about Rust and OCaml anyway.
+- **Draft autosave and version history,** with a diff view between revisions.
+- **Series.** Multi-part deep dives with "previous / next" navigation, for the 4-part OCaml saga that is definitely coming.
+- **Offline reading** as an installable PWA.
+
+**Grown-up operations**
+- **Observability:** error tracking and tracing (Sentry or OpenTelemetry), so I find out about bugs before readers do.
+- **Privacy-friendly analytics** (views and reads per post) without selling anyone's soul to a tracker.
+- **Load testing** and a write-up of the Postgres query plans behind Discover's ranking.
 
 ## Run it yourself
 
@@ -82,6 +115,10 @@ DATABASE_URL=postgresql://...
 # Any long random string. This one works:
 #   node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 JWT_SECRET=
+
+# Profile pictures: create a *public* Blob store in Vercel (Storage -> Create -> Blob)
+# and copy its read-write token here. Optional; everything else works without it.
+BLOB_READ_WRITE_TOKEN=
 ```
 
 Create the tables, then start it:

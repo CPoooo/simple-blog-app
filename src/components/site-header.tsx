@@ -55,7 +55,7 @@ async function AccountNav() {
       <Link href="/write" className={buttonVariants({ variant: "ghost" })}>
         Write
       </Link>
-      <AccountMenu username={user.username} />
+      <AccountMenu username={user.username} avatarUrl={user.avatarUrl} />
     </>
   );
 }

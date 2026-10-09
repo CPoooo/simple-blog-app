@@ -61,7 +61,7 @@ async function Post({ params }: { params: Params }) {
         <h1 className="text-4xl leading-tight font-semibold sm:text-5xl">{post.title}</h1>
         <div className="mt-6 flex items-center justify-center gap-3 text-left text-sm sm:justify-start">
           <Link href={profile} tabIndex={-1} aria-hidden>
-            <UserAvatar username={post.author.username} />
+            <UserAvatar username={post.author.username} src={post.author.avatarUrl} />
           </Link>
           <div>
             <Link href={profile} className="font-medium hover:underline">
@@ -85,7 +85,7 @@ async function Post({ params }: { params: Params }) {
         </Suspense>
       </footer>
       <aside aria-label="About the author" className="mt-10 flex flex-col items-center gap-4 rounded-xl bg-muted/50 p-5 text-center sm:flex-row sm:items-start sm:text-left">
-        <UserAvatar username={post.author.username} className="size-12 text-xl" />
+        <UserAvatar username={post.author.username} src={post.author.avatarUrl} className="size-12 text-xl" />
         <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">Written by</p>
           <Link href={profile} className="font-heading text-lg font-semibold hover:underline">

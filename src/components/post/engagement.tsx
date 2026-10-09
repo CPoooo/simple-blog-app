@@ -3,6 +3,7 @@ import { deleteComment } from "@/app/actions/engagement";
 import { CommentForm } from "@/components/post/comment-form";
 import { LikeButton } from "@/components/post/like-button";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/user-avatar";
 import { getCurrentUser } from "@/lib/dal";
 import { getComments, getLikeCount, hasLiked } from "@/lib/engagement";
 
@@ -43,7 +44,8 @@ export async function PostComments({ postId }: { postId: number }) {
           {thread.map((c) => (
             <li key={c.id} className="grid gap-1 text-center sm:text-left">
               <div className="flex flex-wrap items-center justify-center gap-2 text-sm sm:justify-between">
-                <span>
+                <span className="inline-flex items-center gap-2">
+                  <UserAvatar username={c.author.username} src={c.author.avatarUrl} className="size-6 text-xs" />
                   <Link href={`/u/${c.author.username}`} className="font-medium hover:underline">
                     @{c.author.username}
                   </Link>

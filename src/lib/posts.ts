@@ -23,7 +23,7 @@ export async function getPublishedPost(slug: string) {
   const post = await getDb().query.posts.findFirst({
     where: and(eq(posts.slug, slug), isNotNull(posts.publishedAt)),
     columns: { id: true, slug: true, title: true, content: true, excerpt: true, readingMinutes: true, publishedAt: true },
-    with: { author: { columns: { id: true, username: true, bio: true } }, ...tagNames },
+    with: { author: { columns: { id: true, username: true, bio: true, avatarUrl: true } }, ...tagNames },
   });
   if (!post) return null;
   // Profile edits (username, bio) refresh this entry via updateTag(`user:${id}`).

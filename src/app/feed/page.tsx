@@ -70,7 +70,7 @@ async function Suggestions() {
       {people.map((p) => (
         <li key={p.id} className="grid gap-2">
           <div className="flex items-center gap-3">
-            <UserAvatar username={p.username} />
+            <UserAvatar username={p.username} src={p.avatarUrl} />
             <div className="min-w-0 flex-1">
               <Link href={`/u/${p.username}`} className="block truncate font-medium hover:underline">
                 @{p.username}

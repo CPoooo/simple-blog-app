@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // Warm hues that sit nicely next to the terracotta accent (no neon greens/blues).
@@ -9,8 +10,23 @@ function hueFor(name: string) {
   return HUES[h % HUES.length];
 }
 
-/** No uploads yet, so a stable initial on a color picked from the username. */
-export function UserAvatar({ username, className }: { username: string; className?: string }) {
+/**
+ * The uploaded photo when there is one, otherwise a stable initial on a color
+ * picked from the username. Decorative (alt=""): the name is always shown next to it.
+ */
+export function UserAvatar({ username, src, className }: { username: string; src?: string | null; className?: string }) {
+  if (src) {
+    return (
+      <Image
+        src={src}
+        alt=""
+        width={160}
+        height={160}
+        className={cn("inline-block size-9 shrink-0 rounded-full bg-muted object-cover", className)}
+      />
+    );
+  }
+
   const hue = hueFor(username);
   return (
     <span

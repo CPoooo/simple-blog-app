@@ -32,7 +32,7 @@ export async function getComments(postId: number) {
     where: eq(comments.postId, postId),
     orderBy: asc(comments.createdAt),
     columns: { id: true, body: true, createdAt: true, authorId: true },
-    with: { author: { columns: { username: true } } },
+    with: { author: { columns: { username: true, avatarUrl: true } } },
   });
   // A commenter renaming themselves must refresh threads showing their old name.
   const authorIds = [...new Set(thread.map((c) => c.authorId))];

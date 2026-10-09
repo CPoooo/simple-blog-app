@@ -34,10 +34,13 @@ export async function searchPeople(q: string) {
   cacheLife("minutes");
 
   const p = pattern(q);
-  return getDb()
-    .select({ id: users.id, username: users.username, bio: users.bio })
+  const people = await getDb()
+    .select({ id: users.id, username: users.username, bio: users.bio, avatarUrl: users.avatarUrl })
     .from(users)
     .where(or(ilike(users.username, p), ilike(users.bio, p)))
     .orderBy(users.username)
     .limit(8);
+  // New name, bio, or photo should show up here too.
+  if (people.length) cacheTag(...people.map((u) => `user:${u.id}`));
+  return people;
 }

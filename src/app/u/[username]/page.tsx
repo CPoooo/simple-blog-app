@@ -45,7 +45,7 @@ async function Profile({ params }: { params: Params }) {
       <header className="grid gap-5 border-b pb-8 text-center sm:text-left">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
-            <UserAvatar username={profile.username} className="size-16 text-3xl" />
+            <UserAvatar username={profile.username} src={profile.avatarUrl} className="size-16 text-3xl" />
             <div>
               <h1 className="text-3xl font-semibold">@{profile.username}</h1>
               <p className="text-sm text-muted-foreground">Joined {joined.format(profile.createdAt)}</p>

@@ -20,6 +20,8 @@ export const users = pgTable(
     username: text("username").notNull(),
     passwordHash: text("password_hash").notNull(),
     bio: text("bio"),
+    // Public Vercel Blob URL (avatars/<userId>/...). The image lives in Blob, not Postgres.
+    avatarUrl: text("avatar_url"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
