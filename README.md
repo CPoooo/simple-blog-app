@@ -72,9 +72,7 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Cozy reading mode: an "Aa" panel on every post for page width, text size, line spacing, font (including Atkinson Hyperlegible, made for low-vision readers), sepia or high-contrast paper, and a focus mode that hides everything but the post. Saved per device, works without an account, no flash on load.
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
-## Ideas to make the doomers sweat
-
-Things this is missing that would make even the angriest "AI code is all slop" portfolio reviewer squint and go *huh, ok.* Roughly ordered by how much I think they'd flex.
+## Ideas
 
 **Prove it works (the stuff reviewers actually look for)**
 - **A real test suite in the repo, running in CI.** Every feature here was verified with end-to-end scripts against a real server and database during development. They just live outside the repo right now. Move them into Playwright, run them on every PR with GitHub Actions against a throwaway Neon branch, and put the green badge at the top of this README.
