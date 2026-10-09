@@ -43,6 +43,15 @@ Applies to anything written *as* or *for* Cameron: README, blog posts, docs pros
 - This machine is IT-controlled: **do not install or upgrade system software** (winget, MSI installers, Node upgrades, etc.). Do not attempt it or ask to; npm packages inside the project are fine.
 - When something needs a system-level install, skip it, work around it if possible, and add it to the log below so it can be done later on an unrestricted machine.
 
+## Still To Do (app work, as of 2026-10-09)
+- **Social sign-in keys.** The code is done and shipped, but no provider keys exist yet, so the buttons show disabled ("coming soon"). For each provider, create an OAuth app and set `{GOOGLE|GITHUB|FACEBOOK}_CLIENT_ID` / `_CLIENT_SECRET` in `.env.local` and in Vercel, then **redeploy** (the buttons are prerendered from env at build time).
+  - Callback URLs: `https://simple-blog-app-flax.vercel.app/auth/{provider}/callback` (prod) and `http://localhost:3000/auth/{provider}/callback` (local). GitHub allows only one callback per app, so make two GitHub apps (dev + prod).
+  - Facebook also needs the Privacy Policy URL (`/privacy`), the data deletion instructions URL (`/privacy#delete-your-data`), and the app switched to Live mode.
+- **Eyeball the mobile reading fixes on a real phone**: page width gutters, the "Aa" bottom sheet, the feed bubble rings, and focus mode. They're verified in served CSS/HTML only.
+- **Moderation** (deferred by Cameron): reporting posts/comments, plus image moderation for uploads (no nudity, no hate symbols). Pick a free option when we come back to it.
+- **Move the e2e scripts into the repo**: they currently live in the session scratchpad. Port them to Playwright and run them in GitHub Actions against a throwaway Neon branch.
+- The rest of the wishlist lives in README.md → Ideas.
+
 ### Pending Installs / Deferred Setup
 - Node.js >= 22.20.0 (currently 22.19.0; `winget upgrade OpenJS.NodeJS.22`) — required by the Neon skills CLI: `npx neon@latest skills -s neon -s neon-postgres -y`
 - Neon login (`neon login`, interactive browser sign-in) — needed before `neon mcp -y`, `neon link --project-id empty-math-70241978 --branch production -y`, `neon config init`, and `neon deploy`

@@ -81,6 +81,9 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Connect/disconnect social accounts in Settings, set a password if you signed up socially (and it won't let you lock yourself out)
 - [x] Delete your account for real: posts, comments, likes, follows, and every uploaded image, gone. Plus a privacy page that says so in plain English
 - [x] Cozy reading on phones: page width actually does something now, the "Aa" panel is a bottom sheet that stays out of the way, and the feed bubbles keep their orange rings
+- [ ] Turn on social sign-in for real: the code is shipped, but the buttons say "coming soon" until I make the Google/GitHub/Facebook apps and drop their keys into Vercel (Facebook also wants to see the privacy page, which, look at that, exists)
+- [ ] Check the new mobile reading layout on an actual phone instead of trusting CSS on faith
+- [ ] Move the end-to-end tests into the repo (they exist, they pass, they just live on my machine like a hoarder's garage)
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
 ## Ideas
