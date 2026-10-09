@@ -74,6 +74,8 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] "Surprise me" (dice in the header): drops you into a random post, never the one you're already on
 - [x] "Show me something I'll like": pick your interests, get a weighted-random pick with a "why we picked this" (learns from your likes if you haven't picked any)
 - [x] iOS-style floating back button and back-to-top circle
+- [x] Navbar that makes sense: Feed · Following · For you · Discover · Surprise me grouped together (a bottom tab bar on phones)
+- [x] Editor: Preview mode (see it exactly as readers will), Cancel, and an "are you sure? you haven't saved this yet!" toast with a one-click Save draft before you wander off
 - [x] Cozy reading mode: an "Aa" panel on every post for page width, text size, line spacing, font (including Atkinson Hyperlegible, made for low-vision readers), sepia or high-contrast paper, and a focus mode that hides everything but the post. Saved per device, works without an account, no flash on load.
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 

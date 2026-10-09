@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowUp } from "lucide-react";
+import { requestLeave } from "@/lib/leave-guard";
 import { cn } from "@/lib/utils";
 
 /** Frosted-glass circle, iOS style. Shared by both buttons so they always match. */
@@ -38,8 +39,8 @@ export function FloatingControls() {
     try {
       fromOurSite = Boolean(document.referrer) && new URL(document.referrer).origin === window.location.origin;
     } catch {}
-    if (navigatedInSite.current || fromOurSite) router.back();
-    else router.push("/");
+    // An editor with unsaved changes gets to ask "are you sure?" first.
+    requestLeave(() => (navigatedInSite.current || fromOurSite ? router.back() : router.push("/")));
   }
 
   useEffect(() => {

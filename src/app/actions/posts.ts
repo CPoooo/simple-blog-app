@@ -30,6 +30,12 @@ const postSchema = z.object({
 
 const str = (v: FormDataEntryValue | null) => (typeof v === "string" ? v : "");
 
+/** Only same-site paths: "/feed" yes; "//evil.com", "https://...", "\evil" no (open-redirect guard). */
+function safeNext(raw: string): string | null {
+  if (!raw || raw.length > 300 || !raw.startsWith("/") || raw.startsWith("//") || raw.includes("\\")) return null;
+  return raw;
+}
+
 function parseId(raw: string): number | undefined | "invalid" {
   if (!raw) return undefined;
   const n = Number(raw);
@@ -76,6 +82,8 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
   });
   if (!parsed.success) return { errors: z.flattenError(parsed.error).fieldErrors };
   const { title, content, intent } = parsed.data;
+  // "Save draft, then take me where I was going" (from the unsaved-changes toast).
+  const next = safeNext(str(formData.get("next")));
 
   const { tags: tagNames, error: tagError } = parseTags(parsed.data.tags);
   if (tagError) return { errors: { tags: [tagError] } };
@@ -114,7 +122,7 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
     }
     if (intent === "publish") refreshCaches(slug, tagNames, user.id);
     after(() => cleanUpPostImages(user.id, []));
-    redirect(intent === "publish" ? `/p/${slug}` : `/write/${created[0].id}`);
+    redirect(intent === "publish" ? `/p/${slug}` : (next ?? `/write/${created[0].id}`));
   }
 
   // Ownership check first: the tag statements below are keyed by post id only.
@@ -151,6 +159,7 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
   const removed = imagesOf(existing.content as JSONContent).map((i) => i.src).filter((src) => !kept.has(src));
   after(() => cleanUpPostImages(user.id, removed));
   if (intent === "publish") redirect(`/p/${existing.slug}`);
+  if (next) redirect(next);
   return { saved: true, message: intent === "unpublish" ? "Moved back to drafts." : "Saved." };
 }
 

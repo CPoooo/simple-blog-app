@@ -39,6 +39,7 @@ async function EditPost({ params }: { params: Promise<{ id: string }> }) {
         post={{ id: post.id, title: post.title, content: post.content, published: post.publishedAt !== null, tags: post.tags }}
         tagOptions={tagOptions}
         userId={user.id}
+        author={{ username: user.username, avatarUrl: user.avatarUrl }}
       />
     </>
   );
