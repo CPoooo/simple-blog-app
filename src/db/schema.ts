@@ -18,7 +18,8 @@ export const users = pgTable(
     id: serial("id").primaryKey(),
     email: text("email").notNull(),
     username: text("username").notNull(),
-    passwordHash: text("password_hash").notNull(),
+    // Null for people who only ever signed in with Google/GitHub/Facebook (they can set one later).
+    passwordHash: text("password_hash"),
     bio: text("bio"),
     // Public Vercel Blob URL (avatars/<userId>/...). The image lives in Blob, not Postgres.
     avatarUrl: text("avatar_url"),
@@ -140,6 +141,22 @@ export const likes = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("likes_post_idx").on(t.postId)],
+);
+
+// "Sign in with Google/GitHub/Facebook": one row per linked provider identity.
+// (provider, providerUserId) is the provider's stable id, never the email, which can change.
+export const oauthAccounts = pgTable(
+  "oauth_accounts",
+  {
+    provider: text("provider", { enum: ["google", "github", "facebook"] }).notNull(),
+    providerUserId: text("provider_user_id").notNull(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    email: text("email"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.provider, t.providerUserId] }), index("oauth_accounts_user_idx").on(t.userId)],
 );
 
 // Tags a reader told us they care about; drives "Show me something I'll like".

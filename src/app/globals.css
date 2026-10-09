@@ -299,3 +299,28 @@ html[data-read-focus="on"]:has(.reading) .fab-aa {
 html[data-read-focus="on"]:has(.reading) body {
   padding-bottom: 0;
 }
+
+/* Phones: every "page width" is wider than the screen, so the setting controls the
+   page margins instead (Narrow = roomy margins, Full = nearly edge to edge). */
+@media (max-width: 639px) {
+  :root {
+    --read-gutter: 1rem;
+  }
+  html[data-read-width="narrow"] {
+    --read-gutter: 2.25rem;
+  }
+  html[data-read-width="wide"] {
+    --read-gutter: 0.625rem;
+  }
+  html[data-read-width="full"] {
+    --read-gutter: 0.25rem;
+  }
+  .reading {
+    padding-inline: var(--read-gutter);
+  }
+  /* Focus mode hides the bottom tab bar, so the reading sheet drops to the bottom edge. */
+  html[data-read-focus="on"]:has(.reading) .reading-sheet {
+    bottom: 0;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}

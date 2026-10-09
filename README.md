@@ -77,6 +77,10 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Navbar that makes sense: Feed · Following · For you · Discover · Surprise me grouped together (a bottom tab bar on phones)
 - [x] Editor: Preview mode (see it exactly as readers will), Cancel, and an "are you sure? you haven't saved this yet!" toast with a one-click Save draft before you wander off
 - [x] Cozy reading mode: an "Aa" panel on every post for page width, text size, line spacing, font (including Atkinson Hyperlegible, made for low-vision readers), sepia or high-contrast paper, and a focus mode that hides everything but the post. Saved per device, works without an account, no flash on load.
+- [x] Sign in with Google, GitHub, or Facebook (OAuth with state + PKCE; links to your existing account only when the provider has *verified* the email, so nobody hijacks you with a fake one)
+- [x] Connect/disconnect social accounts in Settings, set a password if you signed up socially (and it won't let you lock yourself out)
+- [x] Delete your account for real: posts, comments, likes, follows, and every uploaded image, gone. Plus a privacy page that says so in plain English
+- [x] Cozy reading on phones: page width actually does something now, the "Aa" panel is a bottom sheet that stays out of the way, and the feed bubbles keep their orange rings
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
 ## Ideas
@@ -128,6 +132,15 @@ JWT_SECRET=
 # Profile pictures: create a *public* Blob store in Vercel (Storage -> Create -> Blob)
 # and copy its read-write token here. Optional; everything else works without it.
 BLOB_READ_WRITE_TOKEN=
+
+# Social sign-in, all optional. Set a pair and that button lights up.
+# Callback URL for each: http://localhost:3000/auth/{google|github|facebook}/callback
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+FACEBOOK_CLIENT_ID=
+FACEBOOK_CLIENT_SECRET=
 ```
 
 Create the tables, then start it:

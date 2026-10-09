@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { OAuthButtons, OAuthErrorFromParams } from "@/components/auth/oauth-buttons";
 import { RegisterForm } from "@/components/auth/register-form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = { title: "Create account" };
 
-export default function RegisterPage() {
+export default function RegisterPage({ searchParams }: { searchParams: Promise<{ oauth_error?: string | string[] }> }) {
   return (
     <Card>
       <CardHeader className="text-center sm:text-left">
@@ -13,6 +15,10 @@ export default function RegisterPage() {
         <CardDescription>Start writing and following the people you like to read.</CardDescription>
       </CardHeader>
       <CardContent>
+        <Suspense fallback={null}>
+          <OAuthErrorFromParams searchParams={searchParams} />
+        </Suspense>
+        <OAuthButtons verb="Sign up" />
         <RegisterForm />
       </CardContent>
       <CardFooter className="justify-center text-sm text-muted-foreground">

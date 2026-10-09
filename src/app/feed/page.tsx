@@ -90,8 +90,9 @@ async function Feed({ searchParams }: { searchParams: SearchParams }) {
   return (
     <>
       {/* People you follow, like story bubbles: tap one to see just their posts. */}
-      <nav aria-label="Filter by person" className="mt-6 -mx-4 overflow-x-auto px-4 pb-2">
-        <ul className="flex w-max gap-4">
+      {/* py: overflow-x-auto also clips vertically, and the ring sits just outside each avatar. */}
+      <nav aria-label="Filter by person" className="mt-4 -mx-4 overflow-x-auto px-4 py-2">
+        <ul className="flex w-max gap-4 p-1">
           <li>
             <Link href={feedHref(filters, { author: null })} aria-current={filters.author ? undefined : "page"} className="grid w-16 justify-items-center gap-1.5 text-xs">
               <span className={cn("grid size-14 place-items-center rounded-full border-2 font-heading text-sm font-semibold", filters.author ? "border-border" : "border-primary bg-primary text-primary-foreground")}>

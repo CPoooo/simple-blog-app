@@ -115,7 +115,11 @@ export function ReadingSettings() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={toggle}
-        className="fab-aa fixed right-4 bottom-[calc(8rem+env(safe-area-inset-bottom))] z-50 size-11 md:bottom-[4.25rem] rounded-full bg-background/70 font-heading text-lg shadow-lg ring-1 ring-foreground/10 backdrop-blur-md"
+        // On phones the open sheet covers this spot (and has its own close button), so hide it then.
+        className={cn(
+          "fab-aa fixed right-4 bottom-[calc(8rem+env(safe-area-inset-bottom))] z-50 size-11 rounded-full bg-background/70 font-heading text-lg shadow-lg ring-1 ring-foreground/10 backdrop-blur-md md:bottom-[4.25rem]",
+          open && "max-md:hidden",
+        )}
       >
         Aa
       </Button>
@@ -126,23 +130,26 @@ export function ReadingSettings() {
           id={panelId}
           role="dialog"
           aria-label="Reading settings"
-          className="fixed right-4 bottom-[calc(11.5rem+env(safe-area-inset-bottom))] z-50 max-h-[calc(100dvh-14rem)] md:bottom-32 md:max-h-[calc(100dvh-10rem)] w-[min(21rem,calc(100vw-2rem))] overflow-y-auto rounded-xl bg-popover p-4 text-popover-foreground shadow-xl ring-1 ring-foreground/10"
+          className="reading-sheet fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-50 max-h-[48dvh] overflow-y-auto rounded-t-2xl bg-popover/95 px-4 pt-2 pb-4 text-popover-foreground shadow-[0_-12px_40px_-12px_color-mix(in_oklch,var(--foreground)_30%,transparent)] ring-1 ring-foreground/10 backdrop-blur-md md:inset-x-auto md:right-4 md:bottom-32 md:max-h-[calc(100dvh-10rem)] md:w-[21rem] md:rounded-xl md:bg-popover md:p-4 md:shadow-xl"
         >
-          <div className="mb-3 flex items-center justify-between">
-            <p className="font-hand text-2xl text-primary">make it cozy</p>
+          {/* grab handle: reads as a bottom sheet on phones */}
+          <div aria-hidden className="mx-auto mb-1 h-1 w-10 rounded-full bg-muted-foreground/30 md:hidden" />
+          <div className="mb-2 flex items-center justify-between md:mb-3">
+            <p className="font-hand text-xl text-primary md:text-2xl">make it cozy</p>
             <Button variant="ghost" size="icon-sm" aria-label="Close reading settings" onClick={() => setOpen(false)}>
               <X />
             </Button>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-3 md:gap-4">
             {(Object.keys(GROUPS) as (keyof ReadingPrefs)[]).map((key) => {
               const group = GROUPS[key];
               const labelId = `${panelId}-${key}`;
               return (
-                <div key={key} className="grid gap-1.5">
+                <div key={key} className="grid gap-1">
                   <p id={labelId} className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                     {group.label}
+                    {key === "width" && <span className="ml-1.5 tracking-normal normal-case sm:hidden">(page margins on phones)</span>}
                   </p>
                   <div role="radiogroup" aria-labelledby={labelId} className="flex rounded-lg bg-muted p-0.5">
                     {group.choices.map((c) => {

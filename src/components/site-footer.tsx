@@ -27,6 +27,9 @@ export function SiteFooter() {
           <Link href="/rss.xml" className="text-muted-foreground hover:text-foreground">
             RSS
           </Link>
+          <Link href="/privacy" className="text-muted-foreground hover:text-foreground">
+            Privacy
+          </Link>
           <a href={site.repo} className="text-muted-foreground hover:text-foreground" rel="noreferrer" target="_blank">
             Source on GitHub
           </a>
