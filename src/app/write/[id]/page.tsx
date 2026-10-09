@@ -34,7 +34,9 @@ async function EditPost({ params }: { params: Promise<{ id: string }> }) {
         <h1 className="text-3xl font-semibold">{post.publishedAt ? "Edit post" : "Edit draft"}</h1>
         <DeletePostButton id={post.id} />
       </div>
-      <PostEditor post={{ id: post.id, title: post.title, content: post.content, published: post.publishedAt !== null }} />
+      <PostEditor
+        post={{ id: post.id, title: post.title, content: post.content, published: post.publishedAt !== null, tags: post.tags }}
+      />
     </>
   );
 }

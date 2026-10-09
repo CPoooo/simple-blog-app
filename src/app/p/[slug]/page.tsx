@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { TagList } from "@/components/tag-list";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPublishedPost } from "@/lib/posts";
 import { renderPostHtml } from "@/lib/post-content";
@@ -34,6 +35,11 @@ async function Post({ params }: { params: Promise<{ slug: string }> }) {
       </header>
       {/* HTML is generated from a schema-validated Tiptap document, never raw user HTML. */}
       <div className="prose-post" dangerouslySetInnerHTML={{ __html: renderPostHtml(post.content) }} />
+      {post.tags.length > 0 && (
+        <footer className="mt-12 border-t pt-6">
+          <TagList tags={post.tags} />
+        </footer>
+      )}
     </article>
   );
 }

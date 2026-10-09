@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { editorExtensions } from "@/lib/editor-extensions";
 
 type PostEditorProps = {
-  post?: { id: number; title: string; content: JSONContent; published: boolean };
+  post?: { id: number; title: string; content: JSONContent; published: boolean; tags: string[] };
 };
 
 const EMPTY_DOC: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
@@ -20,6 +20,7 @@ const EMPTY_DOC: JSONContent = { type: "doc", content: [{ type: "paragraph" }] }
 export function PostEditor({ post }: PostEditorProps) {
   const [state, action, pending] = useActionState(savePost, undefined);
   const [title, setTitle] = useState(post?.title ?? "");
+  const [tagInput, setTagInput] = useState(post?.tags.join(", ") ?? "");
   const [content, setContent] = useState(() => JSON.stringify(post?.content ?? EMPTY_DOC));
 
   const editor = useEditor({
@@ -91,6 +92,23 @@ export function PostEditor({ post }: PostEditorProps) {
             {state.errors.content[0]}
           </p>
         )}
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="tags">Tags</Label>
+        <Input
+          id="tags"
+          name="tags"
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          placeholder="nextjs, rust, lifting"
+          autoComplete="off"
+          aria-invalid={state?.errors?.tags ? true : undefined}
+          aria-describedby="tags-hint"
+        />
+        <p id="tags-hint" className={state?.errors?.tags ? "text-sm text-destructive" : "text-sm text-muted-foreground"}>
+          {state?.errors?.tags?.[0] ?? "Up to 5, separated by commas. Spaces become dashes."}
+        </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
