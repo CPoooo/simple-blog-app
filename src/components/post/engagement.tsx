@@ -44,7 +44,9 @@ export async function PostComments({ postId }: { postId: number }) {
             <li key={c.id} className="grid gap-1">
               <div className="flex items-center justify-between gap-2 text-sm">
                 <span>
-                  <span className="font-medium">@{c.author.username}</span>
+                  <Link href={`/u/${c.author.username}`} className="font-medium hover:underline">
+                    @{c.author.username}
+                  </Link>
                   <span className="text-muted-foreground"> · {dateFormat.format(c.createdAt)}</span>
                 </span>
                 {user?.id === c.authorId && (

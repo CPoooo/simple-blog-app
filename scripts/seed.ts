@@ -33,9 +33,9 @@ type Handle = "rae" | "victor" | "ula" | "dan" | "mo";
 const people: Record<Handle, { username: string; bio: string }> = {
   rae: { username: "rustacean_rae", bio: "Borrow checker apologist. Writes about Rust, OCaml, and type systems." },
   victor: { username: "vim_victor", bio: "hjkl or bust. Currently letting an AI agent drive and pretending I'm fine with it." },
-  ula: { username: "ultra_ula", bio: "Runs 100 milers, lifts heavy, eats everything." },
-  dan: { username: "dugout_dan", bio: "Baseball nerd. Will explain spin rate whether you asked or not." },
-  mo: { username: "mindful_mo", bio: "Consciousness, philosophy, and the occasional existential crisis." },
+  ula: { username: "ultra_ula", bio: "Runs 100 milers, lifts heavy, sits in ice water on purpose. Wim Hof breathing evangelist." },
+  dan: { username: "dugout_dan", bio: "Baseball nerd. Will explain spin rate (or the odds of alien life) whether you asked or not." },
+  mo: { username: "mindful_mo", bio: "Consciousness, metacognition, yoga nidra, and the occasional existential crisis." },
 };
 
 type SeedPost = {
@@ -178,6 +178,62 @@ const seedPosts: SeedPost[] = [
       "Kahneman split thinking into two systems: fast and intuitive, slow and deliberate. I would like to propose a third: the 2am system, which is slow, wrong, and very confident.",
     ],
     likedBy: ["victor"],
+  },
+  {
+    key: "icebath",
+    author: "ula",
+    title: "I took an ice bath every morning for 30 days",
+    tags: ["cold-exposure", "wim-hof"],
+    daysAgo: 2.5,
+    body: [
+      "Day one I lasted 40 seconds and said words my mother would not approve of. Day thirty I sat for three minutes and mostly just felt bored, which is apparently the goal.",
+      "## The breathing is the real trick",
+      "Thirty rounds of Wim Hof breathing beforehand changes everything. The cold stops being an emergency and starts being a conversation. Same lesson as mile 62, honestly: the voice saying get out is loud, but it isn't the boss.",
+      "Will it cure everything? No. Do I feel like a slightly more unhinged, slightly calmer person? Absolutely.",
+    ],
+    likedBy: ["dan", "mo", "victor"],
+    comments: [
+      ["victor", "I set my shower to cold for ten seconds once and had to lie down."],
+      ["ula", "Ten seconds is ten more than most people. Day two tomorrow."],
+    ],
+  },
+  {
+    key: "nidra",
+    author: "mo",
+    title: "Yoga nidra: falling asleep on purpose without falling asleep",
+    tags: ["meditation", "yoga-nidra"],
+    daysAgo: 6,
+    body: [
+      "Yoga nidra is lying on the floor while a voice walks your attention around your body, and somewhere in the middle you end up in this strange place that isn't awake and isn't asleep.",
+      "The first few times I just fell asleep, which the teachers say is fine. Then one day I didn't, and I was aware of being aware of nothing in particular. Hard to describe. Easy to want again.",
+    ],
+    likedBy: ["ula", "victor"],
+  },
+  {
+    key: "meta",
+    author: "mo",
+    title: "Thinking about thinking about thinking",
+    tags: ["metacognition", "philosophy"],
+    daysAgo: 0.5,
+    body: [
+      "Metacognition is noticing your own thinking while it happens. Not the content, the process. Oh, I'm catastrophizing again. Oh, I'm rehearsing an argument with someone who isn't here.",
+      "The weird part is that the noticing changes the thing being noticed. You can't watch your own mind without the watching becoming part of it. Which, if you think about it too hard, is how you end up writing posts like this one.",
+    ],
+    likedBy: ["rae"],
+  },
+  {
+    key: "aliens",
+    author: "dan",
+    title: "I ran the Drake equation like a baseball stat line",
+    tags: ["aliens", "analytics"],
+    daysAgo: 8,
+    body: [
+      "The Drake equation estimates how many alien civilizations we could talk to. It's seven numbers multiplied together, and for about five of them our best guess is a shrug.",
+      "So I did what any stats guy would: plugged in optimistic, median, and pessimistic projections like it's preseason. Optimistic says the galaxy is a crowded ballpark. Pessimistic says we're the only team that showed up.",
+      "Either way the answer is wild, and I've been staring at the sky after night games ever since.",
+    ],
+    likedBy: ["rae", "mo"],
+    comments: [["mo", "What if they're conscious in ways we wouldn't even recognize as conscious?"]],
   },
   {
     key: "bunt",

@@ -47,8 +47,10 @@ async function upsertTags(db: Db, names: string[]): Promise<number[]> {
 }
 
 /** Tag pages are cached per tag, so a change to a post must refresh every tag it had or has. */
-function refreshCaches(slug: string, tagNames: string[]) {
+function refreshCaches(slug: string, tagNames: string[], authorId: number) {
   updateTag(`post:${slug}`);
+  // The author's profile lists their published posts.
+  updateTag(`user:${authorId}`);
   for (const name of new Set(tagNames)) updateTag(`tag:${name}`);
   // Discover's first page and the popular-tag chips both depend on what's published.
   updateTag("discover");
@@ -102,7 +104,7 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
       // A slug collision (same title + same 24-bit suffix) lands here and rolls everything back.
       return { message: "Couldn't save the post. Please try again." };
     }
-    if (intent === "publish") refreshCaches(slug, tagNames);
+    if (intent === "publish") refreshCaches(slug, tagNames, user.id);
     redirect(intent === "publish" ? `/p/${slug}` : `/write/${created[0].id}`);
   }
 
@@ -133,7 +135,7 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
     return { message: "Couldn't save the post. Please try again." };
   }
 
-  refreshCaches(existing.slug, [...existing.postTags.map((l) => l.tag.name), ...tagNames]);
+  refreshCaches(existing.slug, [...existing.postTags.map((l) => l.tag.name), ...tagNames], user.id);
   if (intent === "publish") redirect(`/p/${existing.slug}`);
   return { saved: true, message: intent === "unpublish" ? "Moved back to drafts." : "Saved." };
 }
@@ -152,7 +154,7 @@ export async function deletePost(formData: FormData): Promise<void> {
 
   if (existing) {
     await db.delete(posts).where(and(eq(posts.id, id), eq(posts.authorId, user.id)));
-    refreshCaches(existing.slug, existing.postTags.map((l) => l.tag.name));
+    refreshCaches(existing.slug, existing.postTags.map((l) => l.tag.name), user.id);
   }
   redirect("/me/posts");
 }

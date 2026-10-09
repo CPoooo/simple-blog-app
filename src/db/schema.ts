@@ -1,5 +1,6 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
+  check,
   index,
   integer,
   jsonb,
@@ -105,7 +106,21 @@ export const follows = pgTable(
   (t) => [
     primaryKey({ columns: [t.followerId, t.followingId] }),
     index("follows_following_idx").on(t.followingId),
+    // The app already refuses this; the database makes it impossible.
+    check("follows_no_self", sql`${t.followerId} <> ${t.followingId}`),
   ],
+);
+
+// Sliding-window rate limiting for login/register, in Postgres so there's no Redis.
+// key looks like "login:email:a@b.com" or "login:ip:1.2.3.4".
+export const authAttempts = pgTable(
+  "auth_attempts",
+  {
+    id: serial("id").primaryKey(),
+    key: text("key").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [index("auth_attempts_key_created_idx").on(t.key, t.createdAt)],
 );
 
 // Likes drive the "top global blogs" ranking on the discover page.

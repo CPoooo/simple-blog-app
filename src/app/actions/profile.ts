@@ -44,5 +44,8 @@ export async function updateProfile(_prev: ProfileFormState, formData: FormData)
 
   // Every cached page that shows this user's name or bio is tagged with it.
   updateTag(`user:${user.id}`);
+  // Profile lookups are cached by name: the old URL must 404 and the new one must resolve.
+  updateTag(`username:${user.username}`);
+  updateTag(`username:${username}`);
   return { saved: true, values: { username, bio } };
 }

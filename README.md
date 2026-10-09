@@ -43,14 +43,25 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Register / login / logout (JWT in an httpOnly cookie, bcrypt, no Redis, no rotation, no drama)
 - [x] Light and dark theme with a sun/moon toggle (paper-and-ink palette, terracotta accent, contrast checked)
 - [x] Neon Postgres + Drizzle schema and migrations
-- [ ] Write posts with a simple rich text editor
-- [ ] Tags
-- [ ] Comments
-- [ ] Follow users
-- [ ] Discover page (top posts, tag filtering)
-- [] Cool landing page that explains the website 
-- [] Creative name other than "Blog"
-- [] add hover:cursor-pointer to the light/dark toggle
+- [x] Write posts with a simple rich text editor (Tiptap, drafts, publish/unpublish)
+- [x] Tags
+- [x] Comments
+- [x] Likes
+- [x] Follow users, public profiles, and a following feed
+- [x] Discover page (top posts, tag filtering, infinite scroll)
+- [x] Cool landing page that explains the website
+- [x] Creative name other than "Blog" (it's **Rabbit Holes** now)
+- [x] add hover:cursor-pointer to the light/dark toggle (and every other button, thanks Tailwind v4)
+- [x] Profile editing (username + bio)
+- [x] Search (posts, tags, people)
+- [x] RSS feed, sitemap, robots.txt, and link preview images for posts
+- [x] Login/sign-up rate limiting (in Postgres, still no Redis)
+- [x] Seed script with fake users who are suspiciously into the same things I am
+- [x] Deploy to Vercel ([live here](https://simple-blog-app-flax.vercel.app/))
+- [ ] Image uploads in posts
+- [ ] Notifications (someone liked/commented/followed)
+- [ ] Bookmarks / reading list
+- [ ] Change email and password
 
 ## Run it yourself
 
@@ -82,13 +93,23 @@ npm run dev
 
 Open http://localhost:3000 and register an account.
 
+Want some fake people to talk to? Seed the database with 5 users, a pile of posts, follows, likes, and comments:
+
+```bash
+npm run db:seed        # add the seed data
+npm run db:seed:reset  # wipe it and start fresh
+npm run db:unseed      # remove it (real accounts are never touched)
+```
+
+Every seed account uses the password `seedpass123`, e.g. `vim_victor@seed.example.com`.
+
 ## Stack
 
 Next.js (App Router, Server Actions) · TypeScript (strict) · Drizzle ORM · Neon Postgres · shadcn/ui · Tailwind CSS · Tiptap · Zod · deploys to Vercel.
 
 ## What I Want to Do with This Blog
 
-Once it's done and deployed, this becomes the place I write about what I'm doing and learning: code, agents, mistakes, baseball, hybrid training, bodybuilding, ultramarathons, David Goggins (someones gotta carry the boats dangit), hopefully contributions from others (I would love programmers WAY SMARTER then me to debate/roast anything I have to say in this software space), what I am building, programming language theory (why Rust feels so nice, OCaml talks, etc.), and all the "out there" ideas, like whether the universe is an eternal consciousness or awareness that had only one question to answer (*why am I here?*) and so fragmented itself in a way that it forgot, plus the Weck Method, and everything in between.
+Once it's done and deployed, this becomes the place I write about what I'm doing and learning: code, agents, mistakes, baseball, hybrid training, bodybuilding, ultramarathons, David Goggins (someones gotta carry the boats dangit), hopefully contributions from others (I would love programmers WAY SMARTER then me to debate/roast anything I have to say in this software space), what I am building, programming language theory (why Rust feels so nice, OCaml talks, etc.), and all the "out there" ideas, like whether the universe is an eternal consciousness or awareness that had only one question to answer (*why am I here?*) and so fragmented itself in a way that it forgot, plus the Weck Method, aliens (obviously), meditation and yoga nidra, Wim Hof breathing and cold exposure (yes, ice baths on purpose), metacognition (thinking about thinking, which I am clearly doing right now), and everything in between.
 
 ---
 

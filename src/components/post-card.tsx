@@ -27,7 +27,9 @@ export function PostCard({ post }: { post: PostCardData }) {
         </Link>
       </h2>
       <p className="flex flex-wrap items-center gap-x-1 text-sm text-muted-foreground">
-        <span>@{post.author.username}</span>
+        <Link href={`/u/${post.author.username}`} className="font-medium text-foreground/80 hover:text-foreground hover:underline">
+          @{post.author.username}
+        </Link>
         {post.publishedAt && <span>· {dateFormat.format(new Date(post.publishedAt))}</span>}
         <span>· {post.readingMinutes} min read</span>
         {post.likes !== undefined && (

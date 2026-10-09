@@ -23,6 +23,8 @@ export function AccountMenu({ username }: { username: string }) {
         <ChevronDown aria-hidden />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem render={<Link href="/feed" />}>Your feed</DropdownMenuItem>
+        <DropdownMenuItem render={<Link href={`/u/${username}`} />}>Your profile</DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/me/posts" />}>My posts</DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/settings/profile" />}>Profile settings</DropdownMenuItem>
         <DropdownMenuSeparator />

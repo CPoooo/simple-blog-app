@@ -81,4 +81,23 @@ export async function listPublishedByTag(name: string, limit = 30) {
   return rows.map(flattenTags);
 }
 
-export type PostSummary = Awaited<ReturnType<typeof listPublishedByTag>>[number];
+/** Newest published posts, for the landing page's table of contents. */
+export async function getLatestPosts(limit = 6) {
+  "use cache";
+  // Same tag as Discover: both change exactly when something is published, edited, or deleted.
+  cacheTag("discover");
+  cacheLife("minutes");
+
+  const rows = await getDb().query.posts.findMany({
+    where: isNotNull(posts.publishedAt),
+    orderBy: desc(posts.publishedAt),
+    limit,
+    columns: { id: true, authorId: true, slug: true, title: true, readingMinutes: true, publishedAt: true },
+    with: { author: { columns: { username: true } } },
+  });
+  const authorIds = [...new Set(rows.map((r) => r.authorId))];
+  if (authorIds.length) cacheTag(...authorIds.map((id) => `user:${id}`));
+  return rows;
+}
+
+export type PostSummary =Awaited<ReturnType<typeof listPublishedByTag>>[number];
