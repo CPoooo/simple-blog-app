@@ -43,13 +43,30 @@ Applies to anything written *as* or *for* Cameron: README, blog posts, docs pros
 - This machine is IT-controlled: **do not install or upgrade system software** (winget, MSI installers, Node upgrades, etc.). Do not attempt it or ask to; npm packages inside the project are fine.
 - When something needs a system-level install, skip it, work around it if possible, and add it to the log below so it can be done later on an unrestricted machine.
 
+## Project Facts (read before touching code)
+- **App:** Rabbit Holes, repo `CPoooo/simple-blog-app`, live at https://simple-blog-app-flax.vercel.app/. Vercel auto-deploys `main` in about a minute. Commit as `cameronpool2019@gmail.com` (repo-local git config).
+- **Next.js 16.4 with `cacheComponents: true`.** Uses `'use cache'` + `cacheTag`/`cacheLife`, invalidated with `updateTag` in actions. Anything that reads cookies, `params`, `searchParams`, or calls `usePathname` must sit inside `<Suspense>`, or the build fails with a prerender/blocking-route error (this bit us more than once). `params`/`searchParams` are Promises. Middleware is `src/proxy.ts`. Use `after()` for background work.
+- **Auth:** JWT (jose, HS256) in an httpOnly `session` cookie. Its `v` claim must equal `users.token_version`, and bumping that column signs a user out everywhere. Use `authenticate()` (uncached) for mutations and `getCurrentUser()` (`'use cache: private'`) for rendering, both in `src/lib/dal.ts`. bcryptjs cost 12. Login/sign-up rate limiting lives in the `auth_attempts` table (loopback IPs exempt).
+- **Social sign-in:** Arctic. The routes are `src/app/auth/[provider]/route.ts` and `.../callback/route.ts`. The linking rules are in `src/lib/oauth-accounts.ts`: an email match links only when the provider says the email is *verified* (Facebook never counts as verified). `users.password_hash` is nullable for social-only accounts. A provider is enabled only when both of its env vars are set, and the buttons are prerendered, so **changing provider env vars needs a rebuild/redeploy**.
+- **DB:** Neon over HTTP (`drizzle-orm/neon-http`), so there are no interactive transactions; use `db.batch()` for atomic multi-statement writes. Migrations: edit `src/db/schema.ts`, then `npm run db:generate` and `npm run db:migrate` (0000-0006 are applied to production). Use `npm run db:seed`/`db:seed:rotate`; seed passwords are in gitignored `seed-credentials.local.json`, which must **never** be committed.
+- **Images:** a public Vercel Blob store, uploaded straight from the browser via `upload()` and token routes. Only URLs from our own store are accepted (`isOwnAvatarUrl`/`isOwnPostImageUrl`).
+- **UI:** shadcn on **Base UI** (base-nova): use the `render` prop, not `asChild`. Tailwind v4. The reading prefs are localStorage plus a `<head>` script setting `data-read-*` attributes, with CSS variables scoped to `.reading`.
+- **React compiler lint is strict:** no `Date.now()` in render, and no setState inside an effect (use refs or derive the value during render).
+- **Never print secrets** from `.env.local`. PowerShell `Set-Content` adds a BOM that broke `.env.local` once, so edit env files with the Edit tool.
+
+## Testing (do this before every commit)
+1. `npx tsc --noEmit`, `npm run lint`, and `npm run build`. A rare transient Neon "fetch failed" during build is fine; just rebuild.
+2. `npm run start -- -p 3123` (in the background), then `npm run test:e2e`. That runs 14 suites in `tests/e2e/` against the real DB; each suite cleans up after itself. Details, plus the manual fake-keys `oauth-http` suite, are in `tests/e2e/README.md`.
+3. Add or extend a suite for every new feature. A suite must end by printing `ALL CHECKS PASSED`, and must never pass vacuously (no `|| true`).
+4. After pushing, poll production until the change is live.
+
 ## Still To Do (app work, as of 2026-10-09)
 - **Social sign-in keys.** The code is done and shipped, but no provider keys exist yet, so the buttons show disabled ("coming soon"). For each provider, create an OAuth app and set `{GOOGLE|GITHUB|FACEBOOK}_CLIENT_ID` / `_CLIENT_SECRET` in `.env.local` and in Vercel, then **redeploy** (the buttons are prerendered from env at build time).
   - Callback URLs: `https://simple-blog-app-flax.vercel.app/auth/{provider}/callback` (prod) and `http://localhost:3000/auth/{provider}/callback` (local). GitHub allows only one callback per app, so make two GitHub apps (dev + prod).
   - Facebook also needs the Privacy Policy URL (`/privacy`), the data deletion instructions URL (`/privacy#delete-your-data`), and the app switched to Live mode.
 - **Eyeball the mobile reading fixes on a real phone**: page width gutters, the "Aa" bottom sheet, the feed bubble rings, and focus mode. They're verified in served CSS/HTML only.
 - **Moderation** (deferred by Cameron): reporting posts/comments, plus image moderation for uploads (no nudity, no hate symbols). Pick a free option when we come back to it.
-- **Move the e2e scripts into the repo**: they currently live in the session scratchpad. Port them to Playwright and run them in GitHub Actions against a throwaway Neon branch.
+- **E2E in CI:** the suites are in `tests/e2e/` now, but they only run by hand. Next steps are to port them to Playwright and run them in GitHub Actions against a throwaway Neon branch per PR.
 - The rest of the wishlist lives in README.md → Ideas.
 
 ### Pending Installs / Deferred Setup

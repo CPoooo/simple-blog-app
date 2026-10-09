@@ -13,7 +13,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:seed:reset": "tsx scripts/seed.ts --reset",
     "db:unseed": "tsx scripts/seed.ts --remove",
-    "db:seed:rotate": "tsx scripts/seed.ts --rotate-passwords"
+    "db:seed:rotate": "tsx scripts/seed.ts --rotate-passwords",
+    "test:e2e": "node --env-file=.env.local tests/e2e/run-all.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

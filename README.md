@@ -83,13 +83,14 @@ This somewhat reminds me of the book *Thinking, Fast and Slow* by Daniel Kahnema
 - [x] Cozy reading on phones: page width actually does something now, the "Aa" panel is a bottom sheet that stays out of the way, and the feed bubbles keep their orange rings
 - [ ] Turn on social sign-in for real: the code is shipped, but the buttons say "coming soon" until I make the Google/GitHub/Facebook apps and drop their keys into Vercel (Facebook also wants to see the privacy page, which, look at that, exists)
 - [ ] Check the new mobile reading layout on an actual phone instead of trusting CSS on faith
-- [ ] Move the end-to-end tests into the repo (they exist, they pass, they just live on my machine like a hoarder's garage)
+- [x] End-to-end tests live in the repo now (`npm run test:e2e`, 14 suites against a real server and database), instead of on my machine like a hoarder's garage
+- [ ] Run those tests in CI on every PR (Playwright + GitHub Actions + a throwaway Neon branch)
 - [ ] Moderation (reporting + image moderation, once I pick a model or library for it)
 
 ## Ideas
 
 **Prove it works (the stuff reviewers actually look for)**
-- **A real test suite in the repo, running in CI.** Every feature here was verified with end-to-end scripts against a real server and database during development. They just live outside the repo right now. Move them into Playwright, run them on every PR with GitHub Actions against a throwaway Neon branch, and put the green badge at the top of this README.
+- **A real test suite in the repo, running in CI.** Every feature here is verified by the end-to-end scripts in `tests/e2e/` against a real server and database, but only when I remember to run them. Move them into Playwright, run them on every PR with GitHub Actions against a throwaway Neon branch, and put the green badge at the top of this README.
 - **Neon branch per pull request.** Every PR gets its own copy of the database, so migrations get tested on real data before they ever touch production. Very "I've done this at a real job."
 - **Lighthouse and accessibility scores in CI** (axe-core plus Lighthouse budgets), failing the build if performance or a11y drops.
 - **Architecture Decision Records (ADRs).** Short docs on *why*: JWT without Redis, Postgres rate limiting, cursor pagination, cache tags. Reviewers love the why more than the what.
