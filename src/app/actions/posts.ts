@@ -3,11 +3,14 @@
 import { and, eq, sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { z } from "zod";
+import type { JSONContent } from "@tiptap/core";
 import { getDb, postTags, posts, tags } from "@/db";
 import { requireUser } from "@/lib/dal";
 import { isOwnPostImageUrl } from "@/lib/blob";
 import { docToText, imagesOf, makeExcerpt, makeSlug, parseDoc, readingMinutes } from "@/lib/post-content";
+import { cleanUpPostImages } from "@/lib/post-images";
 import { parseTags } from "@/lib/tags";
 
 export type PostFormState =
@@ -110,13 +113,14 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
       return { message: "Couldn't save the post. Please try again." };
     }
     if (intent === "publish") refreshCaches(slug, tagNames, user.id);
+    after(() => cleanUpPostImages(user.id, []));
     redirect(intent === "publish" ? `/p/${slug}` : `/write/${created[0].id}`);
   }
 
   // Ownership check first: the tag statements below are keyed by post id only.
   const existing = await db.query.posts.findFirst({
     where: and(eq(posts.id, id), eq(posts.authorId, user.id)),
-    columns: { id: true, slug: true },
+    columns: { id: true, slug: true, content: true },
     with: { postTags: { with: { tag: { columns: { name: true } } } } },
   });
   if (!existing) return { message: "That post doesn't exist." };
@@ -141,6 +145,11 @@ export async function savePost(_prev: PostFormState, formData: FormData): Promis
   }
 
   refreshCaches(existing.slug, [...existing.postTags.map((l) => l.tag.name), ...tagNames], user.id);
+  // Images that were in the old version but not the new one: delete the files (after the
+  // response, so saving stays fast). deleteUnusedPostImages keeps any still used elsewhere.
+  const kept = new Set(imagesOf(doc).map((i) => i.src));
+  const removed = imagesOf(existing.content as JSONContent).map((i) => i.src).filter((src) => !kept.has(src));
+  after(() => cleanUpPostImages(user.id, removed));
   if (intent === "publish") redirect(`/p/${existing.slug}`);
   return { saved: true, message: intent === "unpublish" ? "Moved back to drafts." : "Saved." };
 }
@@ -153,13 +162,15 @@ export async function deletePost(formData: FormData): Promise<void> {
   const db = getDb();
   const existing = await db.query.posts.findFirst({
     where: and(eq(posts.id, id), eq(posts.authorId, user.id)),
-    columns: { slug: true },
+    columns: { slug: true, content: true },
     with: { postTags: { with: { tag: { columns: { name: true } } } } },
   });
 
   if (existing) {
     await db.delete(posts).where(and(eq(posts.id, id), eq(posts.authorId, user.id)));
     refreshCaches(existing.slug, existing.postTags.map((l) => l.tag.name), user.id);
+    const images = imagesOf(existing.content as JSONContent).map((i) => i.src);
+    after(() => cleanUpPostImages(user.id, images));
   }
   redirect("/me/posts");
 }
