@@ -4,6 +4,12 @@
  *   npm run db:seed          add the seed data (refuses if it's already there)
  *   npm run db:seed:reset    remove it, then add it fresh
  *   npm run db:unseed        remove it
+ *   npm run db:seed:rotate   give every seed account a new password, changing nothing else
+ *
+ * Passwords are random per account and live in seed-credentials.local.json at the
+ * repo root. That file is gitignored: read it to log in as anyone, but it never
+ * gets committed. (An earlier version hard-coded one shared password; it's in git
+ * history, which is exactly why rotation exists.)
  *
  * Every seed account uses an @seed.example.com email, which is how removal finds
  * them; deleting a user cascades to their posts, likes, comments, and follows.
@@ -13,11 +19,13 @@
  * forever, and fake users with a known password don't belong in production.
  */
 import { randomBytes } from "node:crypto";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import bcrypt from "bcryptjs";
 import { config } from "dotenv";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import { like, sql } from "drizzle-orm";
+import { eq, like, sql } from "drizzle-orm";
 import { comments, follows, likes, postTags, posts, tags, users } from "../src/db/schema";
 import { normalizeTag } from "../src/lib/tags";
 
@@ -26,7 +34,7 @@ if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set (.env.lo
 const db = drizzle(neon(process.env.DATABASE_URL));
 
 const SEED_DOMAIN = "seed.example.com";
-const SEED_PASSWORD = "seedpass123";
+const CREDENTIALS_FILE = join(process.cwd(), "seed-credentials.local.json");
 
 type Handle = "rae" | "victor" | "ula" | "dan" | "mo";
 
@@ -294,6 +302,41 @@ async function removeSeed() {
   console.log(`Removed ${removed.length} seed users (and everything they made), ${orphanTags.length} unused tags.`);
 }
 
+// ---------------------------------------------------------------------------
+// Credentials: { email: password }, kept out of git.
+
+type Credentials = Record<string, string>;
+
+/** 16 chars of base64url = 96 bits of randomness. Unguessable, still copy-pasteable. */
+const newPassword = () => randomBytes(12).toString("base64url");
+const emailFor = (h: Handle) => `${people[h].username}@${SEED_DOMAIN}`;
+
+function readCredentials(): Credentials {
+  if (!existsSync(CREDENTIALS_FILE)) return {};
+  return (JSON.parse(readFileSync(CREDENTIALS_FILE, "utf8")) as { accounts?: Credentials }).accounts ?? {};
+}
+
+function writeCredentials(accounts: Credentials) {
+  const note = "Seed account logins. Gitignored on purpose: never commit this file. Rotate with npm run db:seed:rotate.";
+  writeFileSync(CREDENTIALS_FILE, JSON.stringify({ _note: note, accounts }, null, 2) + "\n");
+}
+
+async function rotatePasswords() {
+  const seeded = await db.select({ email: users.email }).from(users).where(like(users.email, `%@${SEED_DOMAIN}`));
+  if (seeded.length === 0) {
+    console.log("No seed accounts in the database. Run `npm run db:seed` first.");
+    return;
+  }
+  const accounts = Object.fromEntries(seeded.map((u) => [u.email, newPassword()]));
+  // File first: if the database step dies halfway, the new passwords aren't lost (just rotate again).
+  writeCredentials(accounts);
+  for (const [email, password] of Object.entries(accounts)) {
+    await db.update(users).set({ passwordHash: await bcrypt.hash(password, 12) }).where(eq(users.email, email));
+  }
+  console.log(`Rotated ${seeded.length} seed passwords. Only password hashes changed; everything else is untouched.`);
+  console.log(`New logins are in ${CREDENTIALS_FILE} (gitignored).`);
+}
+
 async function seed() {
   const existing = await db.select({ id: users.id }).from(users).where(like(users.email, `%@${SEED_DOMAIN}`)).limit(1);
   if (existing.length > 0) {
@@ -301,11 +344,15 @@ async function seed() {
     return;
   }
 
-  const passwordHash = await bcrypt.hash(SEED_PASSWORD, 12);
   const handles = Object.keys(people) as Handle[];
+  // Reuse saved passwords when the file exists (so a reset keeps your logins), fill any gaps.
+  const accounts = readCredentials();
+  for (const h of handles) accounts[emailFor(h)] ??= newPassword();
+  writeCredentials(accounts);
+  const hashes = await Promise.all(handles.map((h) => bcrypt.hash(accounts[emailFor(h)], 12)));
   const createdUsers = await db
     .insert(users)
-    .values(handles.map((h) => ({ ...people[h], email: `${people[h].username}@${SEED_DOMAIN}`, passwordHash, createdAt: ago(30) })))
+    .values(handles.map((h, i) => ({ ...people[h], email: emailFor(h), passwordHash: hashes[i], createdAt: ago(30) })))
     .returning({ id: users.id, username: users.username });
   const userId = Object.fromEntries(handles.map((h) => [h, createdUsers.find((u) => u.username === people[h].username)!.id])) as Record<Handle, number>;
 
@@ -368,13 +415,13 @@ async function seed() {
     `Seeded ${handles.length} users, ${seedPosts.length} posts (${published} published, ${seedPosts.length - published} draft), ` +
       `${allTags.length} tags, ${seedFollows.length} follows, ${likeCount} likes, ${commentCount} comments.`,
   );
-  console.log(`\nLog in as any of them with password "${SEED_PASSWORD}":`);
-  for (const h of handles) console.log(`  ${people[h].username}@${SEED_DOMAIN}`);
+  console.log(`\nLogins (email + password) are in ${CREDENTIALS_FILE} (gitignored).`);
 }
 
 // No top-level await: the package isn't "type": "module", so tsx runs this as CommonJS.
 async function main() {
   const arg = process.argv[2];
+  if (arg === "--rotate-passwords") return rotatePasswords();
   if (arg === "--remove" || arg === "--reset") await removeSeed();
   if (arg !== "--remove") await seed();
 }

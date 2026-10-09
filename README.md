@@ -136,9 +136,10 @@ Want some fake people to talk to? Seed the database with 5 users, a pile of post
 npm run db:seed        # add the seed data
 npm run db:seed:reset  # wipe it and start fresh
 npm run db:unseed      # remove it (real accounts are never touched)
+npm run db:seed:rotate # give every seed account a fresh password, nothing else changes
 ```
 
-Every seed account uses the password `seedpass123`, e.g. `vim_victor@seed.example.com`.
+Each seed account gets its own random password, written to `seed-credentials.local.json` in the project root. That file is gitignored, so open it locally to log in as anyone (e.g. `vim_victor@seed.example.com`) but it never ends up on GitHub.
 
 ## Stack
 
